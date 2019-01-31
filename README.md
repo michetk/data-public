@@ -1,8 +1,8 @@
 # data-public
 
-Esse diretório refere-se somente para publicações em exercício de disciplinas acadêmicas.
+Este repositório refere-se somente a publicações em exercícios de disciplinas acadêmica.
 
->Material em diversa linguagem de programação.
+>Material em diversas linguagens de programação.
 
 >Material em pleno exercício e modificação.
 
