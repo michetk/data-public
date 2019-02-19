@@ -10,6 +10,9 @@ struct pilha {
 	int topo;
 	int item[TAMANHO];
 };
+void inicializa(struct pilha *ps) {
+	ps->topo = -1;
+}
 int vazia(struct pilha *ps) {
 	if(ps->topo == -1)
 		return (1);
@@ -43,10 +46,47 @@ void opcao(int *op) {
 	printf("Escolha a Opcao: ");
 	scanf("%d", op);
 }
+int quantidade(struct pilha *ps) {
+	int x;
+	int contador = 0;
+	struct pilha aux;
+	inicializa(&aux);
+	if(vazia(ps))
+		return 0;
+	while(!vazia(ps)) {
+		x = pop(ps);
+		contador++;
+		push(&aux, x);
+	}
+	while(!vazia(&aux)) {
+		x = pop(&aux);
+		push(ps, x);
+	}
+	return contador;
+}
+void mostraPilha(struct pilha *ps) {
+	int x;
+	struct pilha aux;
+	inicializa(&aux);
+	if(vazia(ps)) {
+		printf("\nPilha vazia");
+		getchar();
+		return;
+	}
+	while(!vazia(ps)) {
+		x = pop(ps);
+		push(&aux, x);
+	}
+	while(!vazia(&aux)) {
+		x = pop(&aux);
+		printf("\nElemento na pilha %d", x);
+		push(ps, x);
+	}
+}
 
 int main() {
 	struct pilha p;
-	p.topo = -1;
+	inicializa(&p);
 	int op, x;
 	op = -1;
 	do{
@@ -62,12 +102,16 @@ int main() {
 				push(&p, x);
 				printf("\nPOSICAO-TOP atual: %d\n", p.topo);
 				printf("VALOR-TOP atual: %d\n", p.item[p.topo]);
+				printf("QTDE Elementos: %d", quantidade(&p));
+				mostraPilha(&p);
 				break;
 			case 2:
 				vazia(&p);
 				pop(&p);
 				printf("\nTOP atual: %d\n", p.topo);
 				printf("VALOR-TOP atual: %d\n", p.item[p.topo]);
+				printf("QTDE Elementos: %d", quantidade(&p));
+				mostraPilha(&p);
 				break;
 			default:
 				printf("\nERRO! (in switch)\n");
