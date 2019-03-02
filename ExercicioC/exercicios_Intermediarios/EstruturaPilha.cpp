@@ -1,7 +1,3 @@
-/*
-ESTRUTURA DE DADOS MODELO PILHA
-*/
-
 #include<stdio.h>
 #include<stdlib.h>
 
