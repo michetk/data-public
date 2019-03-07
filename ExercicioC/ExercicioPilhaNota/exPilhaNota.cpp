@@ -12,10 +12,11 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<conio.h>
-#define TAMANHO 4
-#define ANSI_COLOR_RED "\e[31m"
-#define ANSI_COLOR_BLUE "\e[34m"
-#define ANSI_COLOR_RESET "\e[0m"
+#define TAMANHO 10
+
+#define ANSI_COLOR_RED "\e[31m" //COR USADA PARA ALERTAS
+#define ANSI_COLOR_BLUE "\e[34m" //COR USADA PARA DISPLAY
+#define ANSI_COLOR_RESET "\e[0m" //RETORNA COR DEFAULT
 
 struct veiculo {
 	int placa;
@@ -32,15 +33,15 @@ void push(struct pilha *ps, int x);
 int pop(struct pilha *ps);
 int quantidade(struct pilha *ps);
 void mostraPilha(struct pilha *ps);
-void menu(int *op, int aux);
-int fconfirmar(char confirmar);
-int fconfirmarExit(char confirmar);
-void qtdeManobra(struct pilha *ps);
-void zeraManobra(struct pilha *ps);
-void exe(struct pilha *ps, struct veiculo *pv);
-void fexit(char pexit);
+void menu(int *op, int aux); //MENU DE CONTROLE DE OPÇÕES
+int fconfirmar(char confirmar); //CONFIRMAR OU NÃO A SAIDA DE UM VEÍCULO DO ESTACIONAMENTO
+int fconfirmarExit(char confirmar); //CONFIRMAR OU NAO O FECHAMENTO DO PROGRAMA
+void qtdeManobra(struct pilha *ps); //CONTA A QUANTIDADE DE MANOBRA QUE CADA VEICULO VAZ PARA UM OUTRO SAIR
+void zeraManobra(struct pilha *ps); //INICIALIZA A ENTRADA DE UM VEÍCULO COM MANOBRA ZERO
+void exe(struct pilha *ps, struct veiculo *pv); //FUNÇÃO PRINCIPAL ONDE É EXECUTADO TODO O PROGRAMA, AJUDA A REINICIALIZAR O PROGRAMA SEM SAIR DO MESMO E PERDER OS DADOS NA MEMÓRIA 
+void fexit(char pexit); //CONTROLA O FECHAMENTO DO PROGRAMA USANDO A TECLA 'ESC'
 
-int mainRet = 0;
+int mainRet = 0; //ESTÁ DENTRO DA FUNCAO 'MENU' E 'FCONFIRMAR', SERVE PARA RETORNAR UMA MENSAGEM DE ERRO CASO A OPCAO '2' NÃO SEJA EXECUTADA COM EXIGE O PROGRAMA
 struct pilha s;
 struct veiculo valorS;
 int main() {
@@ -123,17 +124,19 @@ void mostraPilha(struct pilha *ps) {
 }
 void menu(int *op, int aux) {
 	if (aux != 1)
-		aux = 0;
+		aux = 0; //VARIÁVEL QUE CONTROLA QUAL PARTE DO MENU SERÁ EXECUTADO
 	*op = -1;
+	/*LAÇO PARA CONTROLAR A REINCIDÊNCIA NO MENU*/
 	do {
 		system("cls");
-		printf(":::CONTROLE DE ESTACIONAMENTO:::\n\n");
+		printf(":::CONTROLE DE ESTACIONAMENTO:::\t\tCAPACIDADE DE VEICULOS: %d\n\t\t\t\t\t\tVAGAS DISPONIVEIS: %d\n\n", TAMANHO, TAMANHO - quantidade(&s));
 		printf("\n___ESCOLHA AS OPCOES___\n");
 		printf("\n1. ENTRADA DE VEICULO");
 		printf("\n2. SAIDA DE VEICULO");
 		printf("\n3. MOSTRAR ESTACIONAMENTO");
+		/*ENTRA PRIMEIRO AQUI*/
 		if(aux == 0) {
-			if(mainRet == 1) {
+			if(mainRet == 1) { //RETORNA AQUI SOMENTE SE A OPCAO '2' FOR CONFIRMADA DE FORMA ERRADA
 				printf(ANSI_COLOR_RED"\n\nOPCAO INVALIDA! digite s(sim) ou n(nao) para a opcao 2..."ANSI_COLOR_RESET);
 				mainRet = 0;
 				printf("\nDigite a opcao: ");
@@ -143,17 +146,19 @@ void menu(int *op, int aux) {
 			printf("\n\n\nDigite a opcao: ");
 			scanf("%d", op);
 		}
+		/*SE A OPCAO DIGITADA NÃO FOR CONFORME AS QUE FORAM FORNECIDAS O MENU RETORNA AQUI*/
 		if(aux == 1) {
 			printf(ANSI_COLOR_RED"\n\nOPCAO INVALIDA! ..tente novamente.."ANSI_COLOR_RESET);
 			printf("\nDigite a opcao: ");
 			scanf("%d", op);
 		}
 		aux = 1;
-	}while(*op < 1 || *op > 3);
+	}while(*op < 1 || *op > 3); //SE A OPÇÃO FOR CORRETA O PROGRAMA PULA O LAÇO DE REPETIÇÃO
 	aux = 2;
+	/*SE A OPCAO DIGITADA FOR CORRETA, O PROGRAMA LIMPA A TELA E FORNECE AS INFORMAÇÕES DE FORMA CLARA*/
 	if(aux == 2) {
 		system("cls");
-		printf(":::CONTROLE DE ESTACIONAMENTO:::\n\n");
+		printf(":::CONTROLE DE ESTACIONAMENTO:::\t\tCAPACIDADE DE VEICULOS: %d\n\t\t\t\t\t\tVAGAS DISPONIVEIS: %d\n\n", TAMANHO, TAMANHO - quantidade(&s));
 		printf("\n___ESCOLHA AS OPCOES___\n");
 		printf("\n1. ENTRADA DE VEICULO");
 		printf("\n2. SAIDA DE VEICULO");
@@ -161,7 +166,7 @@ void menu(int *op, int aux) {
 		printf("\n\n\nDigite a opcao: %d", *op);
 		printf("\n\n______________________________\n\n");
 	}
-	aux = 0;
+	aux = 0; //ANTES DE SAIR DO MENU, O PROGRAMA ZERA O CONTROLE DO MENU
 }
 void qtdeManobra(struct pilha *ps) {
 	if(vazia(ps))
@@ -176,25 +181,26 @@ void qtdeManobra(struct pilha *ps) {
 	while(!vazia(&aux)) {
 		x.placa = pop(&aux);
 		push(ps, x.placa);
-		ps->item[ps->topo].manobras++;
+		ps->item[ps->topo].manobras++; //SOMA '1' MANOBRA DO VEICULO VIGENTE
 	}
 }
 void zeraManobra(struct pilha *ps) {
 	ps->item[ps->topo].manobras = 0;
 }
 void exe(struct pilha *ps, struct veiculo *pv) {
-	int op;
+	int op; //VARIÁVEL QUE CONTROLA AS OPÇÕES ESCOLHIDAS
 	do {
-		menu(&op, 0);
+		menu(&op, 0); //CHAMA O MENU
 		switch(op) {
 			case 1:
 				printf(":::ENTRADA:::");
+				/*SE O ESTACIONAMENTO ESTIVER CHEIO, CONDICIONAL NÃO PERMITE A ENTRADA DO VEÍCULO*/
 				if(cheia(ps)) {
 					printf(ANSI_COLOR_RED"\nNAO HA VAGAS"ANSI_COLOR_RESET);
 					printf("\nENTER para voltar as OPCOES");
 					printf("\nESC para sair do programa");
-					fexit(getch());
-					exe(&s, &valorS);
+					fexit(getch()); //CONTROLA O FECHAMENTO DO PROGRAMA USANDO A TECLA 'ESC'
+					exe(&s, &valorS); //CHAMA A FUNÇÃO PRINCIPAL NOVAMENTE E COMEÇA O PROGRAMA NOVAMENTE SEM ZERAR A MEMÓRIA
 				}
 				else {
 					printf("\nVAGA DISPONIVEI");
@@ -202,55 +208,59 @@ void exe(struct pilha *ps, struct veiculo *pv) {
 				printf("\nDigite o numero da PLACA: ");
 				scanf("%d", &pv->placa);
 				printf("______________________________\n");
+				/*QUANDO VEÍCULO ENTRA AS MANOBRAS SÃO ZERADAS PARA QUE NÃO HAJA LIXO NA MEMÓRIA DE MANOBRAS*/
 				push(ps, pv->placa);
 				zeraManobra(ps);
 				break;
 			case 2:
+				/*SE TENTAR REMOVER UM CARRO COM O ESTACIONAMENTO JÁ VAZIO, PROGRAMA ALERTA USUÁRIO*/
 				if(vazia(ps)) {
 					printf(ANSI_COLOR_RED"\nESTACIONAMENTO VAZIO!"ANSI_COLOR_RESET);
 					printf("\nENTER para voltar as OPCOES");
 					printf("\nESC para sair do programa");
-					fexit(getch());
-					exe(&s, &valorS);
+					fexit(getch()); //CONTROLA O FECHAMENTO DO PROGRAMA USANDO A TECLA 'ESC'
+					exe(&s, &valorS); //CHAMA A FUNÇÃO PRINCIPAL NOVAMENTE E COMEÇA O PROGRAMA NOVAMENTE SEM ZERAR A MEMÓRIA
 				}
 				else {
 					char confirmar;
 					int conf;
 					printf(":::SAIDA:::");
 					printf("\nTem certeza que deseja remover o carro de PLACA->%d? S/N: ", ps->item[ps->topo]);
-					fflush(stdin);
+					fflush(stdin); //LIMPA UMA TECLA DIGITADA DA MEMÓRIA FLUSH, IMPORTANTE PARA A FUNÇÃO 'FCONFIRMAR' NÃO CAPTURAR UMA ENTRADA INDESEJADA
 					scanf("%c", &confirmar);
 					conf = fconfirmar(confirmar);
 					if(conf == 1) {
-						int qtdeMan;
+						int qtdeMan; //VARIÁVEL PARA RECEBER O ÚLTIMO VALOR DE 'TOPO' ANTES DO MESMO SER REMOVIDO, SERVIRÁ PARA AJUDAR A MOSTRAR MANOBRAS QUE O VEÍCULO VEZ ANTES DE PARTIR
 						qtdeMan = ps->topo;
 						pop(ps);
 						qtdeManobra(ps);
-						printf("\nQTDE manobras do VEICULO: %d", ps->item[qtdeMan].manobras);
+						printf("\nQTDE manobras do VEICULO: %d", ps->item[qtdeMan].manobras); //VARIÁVEL 'qtdeMan' É USADA DENTRO DO ÍNDECE DE 'ITEM' PARA REPRESENTAR O ÚLTIMO VEÍCULO QUE SAIU, E A QUANTIDADE DE MANOBRAS
 						break;
 					}
 					else
-						exe(&s, &valorS);
+						exe(&s, &valorS); //APÓS A CONCLUSÃO DA OPERAÇÃO, A FUNCAO PRINCIPAL É CHAMADA E O PROGRAMA REINICIALIZADO SEM ZERAR OS DADOS DA MEMÓRIA
 				}
 				case 3:
 						break;
 			default:
 				break;
 		}
+		/*TODA VEZ QUE UMA OPERAÇÃO FOR REALIZADA E O ESTACIONAMENTO ESTIVER VAZIO, SERÁ MOSTRA UM ALERTA E NÃO SERÁ POSSÍVEL AVANÇAR*/
 		if(vazia(ps)) {
 			printf("\nQuantidade de veiculos no estacionamento: %d", quantidade(ps));
 			printf(ANSI_COLOR_RED"\n\nESTACIONAMENTO VAZIO!"ANSI_COLOR_RESET);
 			getch();
-			exe(&s, &valorS);
+			exe(&s, &valorS); //APÓS A CONCLUSÃO DA OPERAÇÃO, A FUNCAO PRINCIPAL É CHAMADA E O PROGRAMA REINICIALIZADO SEM ZERAR OS DADOS DA MEMÓRIA
 		}
-			printf("\nUltimo veiculo a entrar: PLACA->%d", ps->item[ps->topo]);
-			printf("\nQuantidade de veiculos no estacionamento: %d", quantidade(ps));
-			mostraPilha(ps);
+		/*INFORMAÇÕES QUE IRÃO APARECER SEMPRE QUE UMA OPERAÇÃO BEM SUCEDIDA FOR REALIZADA, INCLUSIVE PARA O OPÇÃO '3'*/
+		printf("\nUltimo veiculo que entrou: PLACA->%d", ps->item[ps->topo]);
+		printf("\nQuantidade de veiculos no estacionamento: %d", quantidade(ps));
+		mostraPilha(ps);
 		
 		printf("\n\n\nFIM DO PROGRAMA");
 		printf("\nENTER para voltar as OPCOES");
 		printf("\nESC para sair do programa");
-		fexit(getch());
+		fexit(getch()); //CONTROLA O FECHAMENTO DO PROGRAMA USANDO A TECLA 'ESC'
 	}while(1);
 }
 int fconfirmar(char confirmar) {
@@ -261,8 +271,8 @@ int fconfirmar(char confirmar) {
 			return 0;
 	}
 	else {
-		mainRet = 1;
-		exe(&s, &valorS);
+		mainRet = 1; //VARIÁVEL CRIADA NO INÍCIO DO PROGRAMA PARA CONTROLAR MENSAGEM A SER EXIBIDA SE O OPÇÃO DE CONFIRMAR NÃO SATISFAZER AO 'S' OU 'N'.
+		exe(&s, &valorS); //PROGRAMA É REINICIALIZADO PARA ENTRAR NA CONDIÇÃO 'mainRet' DENTRO DA FUNÇÃO MENU E EXIBIR MENSAGEM DE ATENÇÃO.
 	}
 }
 int fconfirmarExit(char confirmar) {
@@ -272,37 +282,39 @@ int fconfirmarExit(char confirmar) {
 		else
 			return 0;
 	}
+	/*BLOCO DE COMANDO CONSTRUIDO PARA CRIAR UM LOOP DE REPETIÇÃO SE A OPCAO DE SAIR DO PROGRAMA NÃO FOR SATISFEITA COM UMA CONFIRMAÇÃO EXIGIDA PELO PROGRAMA*/
 	else {
 		printf(ANSI_COLOR_RED "\n\nOPCAO INVALIDA! digite s(sim) ou n(nao) ..." ANSI_COLOR_RESET);
-		int auxConfirmar;
+		int auxConfirmar; //VARIÁVEL CRIADA PARA RECEVER RETORNO DE '1' OU 'O' DA FUNÇÃO 'FCONFIRMAEXIT'
 		int auxExit = 0;
 		printf("\n\nTem certeza que deseja sair do programa? S/N: ");
-		fflush(stdin);
+		fflush(stdin); // LIMPA ÚLTIMA ENTRADA DO TECLADO, IMPORTANTE PARA QUE A FUNÇÃO 'FCONFIRMAEXIT' FUNCIONE PERFEITAMENTE
 		auxConfirmar = fconfirmarExit(getch());
 		if(auxConfirmar == 1) {
-			exit(0);
+			exit(0);  //SAIR DO PROGRAMA
 		}
+		/*SE A TENTATIVA DE SAIR DO PROGRAMA NÃO FOR CONFIRMADA, PEDIR NOVAMENTE QUE O USUÁRIO TOME UMA DECISÃO*/
 		if(auxConfirmar == 0) {
 		printf("\n\nENTER para voltar as OPCOES");
 		printf("\nESC para sair do programa");
-		fexit(getch());
+		fexit(getch()); //CONTROLA O FECHAMENTO DO PROGRAMA USANDO A TECLA 'ESC'
 		}
 	}
 }
 void fexit(char pexit) {
+	/*SE A TECLHA DIGITADA FOR 'ESC' O PROGRAMA DEVE PERGUNTAR PARA O USUÁRIO SE ELE REALMENTE DESEJA FECHAR O PROGRAMA*/
 	if(pexit == 27) {
-		int auxConfirmar;
+		int auxConfirmar; //VARIÁVEL PARA RECEBER RETORNO DA FUNÇÃO 'FCONFIRMAEXIT' '1' OU '0'
 		int auxExit = 0;
 		printf("\nTem certeza que deseja sair do programa? S/N: ");
-		//fflush(stdin);
 		auxConfirmar = fconfirmarExit(getch());
-		if(auxConfirmar == 1) {
-			exit(0);
+		if(auxConfirmar == 1) { //SE A OPÇÃO FOR 'S' OU 's'
+			exit(0); //FECHAR PROGRAMA
 		}
-		if(auxConfirmar == 0) {
+		if(auxConfirmar == 0) { //SE A OPÇÃO FOR 'N' OU 'n'
 		printf("\n\nENTER para voltar as OPCOES");
 		printf("\nESC para sair do programa");
-		fexit(getch());
+		fexit(getch()); //CHAMA A FUNÇÃO DE CONTROLE DE FECHAMENTO NOVAMENTE FAZENDO UM LAÇO DE REPETIÇÃO
 		}
 	}
 }
