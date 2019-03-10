@@ -191,7 +191,7 @@ void qtdeManobra(struct pilha *ps) {
 	while(!vazia(&aux)) {
 		x.placa = pop(&aux);
 		push(ps, x.placa);
-		ps->item[ps->topo].manobras++; //SOMA '1' MANOBRA DO VEICULO VIGENTE
+		ps->item[ps->topo].manobras++; //SOMA '1' SOBRE A MANOBRA DO VEICULO
 	}
 }
 void zeraManobra(struct pilha *ps) {
