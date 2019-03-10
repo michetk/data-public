@@ -12,7 +12,11 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<conio.h>
-#define TAMANHO 4
+#define TAMANHO 10
+
+#define ANSI_COLOR_RED "\e[31m" //COR USADA PARA ALERTAS
+#define ANSI_COLOR_BLUE "\e[34m" //COR USADA PARA DISPLAY
+#define ANSI_COLOR_RESET "\e[0m" //RETORNA COR DEFAULT
 
 struct veiculo {
 	int placa;
@@ -36,16 +40,13 @@ void qtdeManobra(struct pilha *ps); //CONTA A QUANTIDADE DE MANOBRA QUE CADA VEI
 void zeraManobra(struct pilha *ps); //INICIALIZA A ENTRADA DE UM VEÍCULO COM MANOBRA ZERO
 void exe(struct pilha *ps, struct veiculo *pv); //FUNÇÃO PRINCIPAL ONDE É EXECUTADO TODO O PROGRAMA, AJUDA A REINICIALIZAR O PROGRAMA SEM SAIR DO MESMO E PERDER OS DADOS NA MEMÓRIA 
 void fexit(char pexit); //CONTROLA O FECHAMENTO DO PROGRAMA USANDO A TECLA 'ESC'
-void validarPlaca(); //FAZ VALIDAÇÃO DA PLACA DO VEÍCULO
 
 int mainRet = 0; //ESTÁ DENTRO DA FUNCAO 'MENU' E 'FCONFIRMAR', SERVE PARA RETORNAR UMA MENSAGEM DE ERRO CASO A OPCAO '2' NÃO SEJA EXECUTADA COM EXIGE O PROGRAMA
-int placa;
 struct pilha s;
 struct veiculo valorS;
 int main() {
 	valorS.placa = 0;
 	inicializar(&s);
-	placa = valorS.placa;
 	exe(&s, &valorS);
 	
 	getchar();
@@ -107,7 +108,7 @@ void mostraPilha(struct pilha *ps) {
 	int cont = 0;
 	inicializar(&aux);
 	if(vazia(ps))
-		printf("\nESTACIONAMENTO vazio\n");
+		printf(ANSI_COLOR_RED"\nESTACIONAMENTO VAZIO!"ANSI_COLOR_RESET);
 	while(!vazia(ps)) {
 		x.placa = pop(ps);
 		push(&aux, x.placa);
@@ -116,7 +117,7 @@ void mostraPilha(struct pilha *ps) {
 	while(!vazia(&aux)) {
 		x.placa = pop(&aux);
 		push(ps, x.placa);
-		printf("\n--> POSICAO(%d) contem PLACA %d ::::: QTDE manobras: %d", cont, x.placa, ps->item[ps->topo].manobras);
+		printf(ANSI_COLOR_BLUE"\n--> POSICAO(%d) contem PLACA->%d ::::: QTDE manobras: %d"ANSI_COLOR_RESET, cont, x.placa, ps->item[ps->topo].manobras);
 		cont++;
 	}
 	printf("\n");
@@ -128,13 +129,7 @@ void menu(int *op, int aux) {
 	/*LAÇO PARA CONTROLAR A REINCIDÊNCIA NO MENU*/
 	do {
 		system("cls");
-		printf(":::CONTROLE DE ESTACIONAMENTO:::\t\tCAPACIDADE DE VEICULOS: %d\n\t\t\t\t\t\tVAGAS DISPONIVEIS: %d", TAMANHO, TAMANHO - quantidade(&s));
-		if(valorS.placa == 0)
-			printf("\n\t\t\t\t\t\tUltimo veiculo que entrou: PLACA (----)");		
-		else
-			printf("\n\t\t\t\t\t\tUltimo veiculo que entrou: PLACA %d", placa);
-		
-		printf("\n\t\t\t\t\t\tQuantidade de veiculos no estacionamento: %d", quantidade(&s));
+		printf(":::CONTROLE DE ESTACIONAMENTO:::\t\tCAPACIDADE DE VEICULOS: %d\n\t\t\t\t\t\tVAGAS DISPONIVEIS: %d\n\n", TAMANHO, TAMANHO - quantidade(&s));
 		printf("\n___ESCOLHA AS OPCOES___\n");
 		printf("\n1. ENTRADA DE VEICULO");
 		printf("\n2. SAIDA DE VEICULO");
@@ -142,7 +137,7 @@ void menu(int *op, int aux) {
 		/*ENTRA PRIMEIRO AQUI*/
 		if(aux == 0) {
 			if(mainRet == 1) { //RETORNA AQUI SOMENTE SE A OPCAO '2' FOR CONFIRMADA DE FORMA ERRADA
-				printf("\n\nOPCAO INVALIDA! digite s(sim) ou n(nao) para a opcao 2...");
+				printf(ANSI_COLOR_RED"\n\nOPCAO INVALIDA! digite s(sim) ou n(nao) para a opcao 2..."ANSI_COLOR_RESET);
 				mainRet = 0;
 				printf("\nDigite a opcao: ");
 				scanf("%d", op);
@@ -153,7 +148,7 @@ void menu(int *op, int aux) {
 		}
 		/*SE A OPCAO DIGITADA NÃO FOR CONFORME AS QUE FORAM FORNECIDAS O MENU RETORNA AQUI*/
 		if(aux == 1) {
-			printf("\n\nOPCAO INVALIDA! ..tente novamente..");
+			printf(ANSI_COLOR_RED"\n\nOPCAO INVALIDA! ..tente novamente.."ANSI_COLOR_RESET);
 			printf("\nDigite a opcao: ");
 			scanf("%d", op);
 		}
@@ -163,12 +158,7 @@ void menu(int *op, int aux) {
 	/*SE A OPCAO DIGITADA FOR CORRETA, O PROGRAMA LIMPA A TELA E FORNECE AS INFORMAÇÕES DE FORMA CLARA*/
 	if(aux == 2) {
 		system("cls");
-		printf(":::CONTROLE DE ESTACIONAMENTO:::\t\tCAPACIDADE DE VEICULOS: %d\n\t\t\t\t\t\tVAGAS DISPONIVEIS: %d", TAMANHO, TAMANHO - quantidade(&s));
-		if(valorS.placa == 0)
-			printf("\n\t\t\t\t\t\tUltimo veiculo que entrou: PLACA (----)");		
-		else
-			printf("\n\t\t\t\t\t\tUltimo veiculo que entrou: PLACA %d", placa);
-		printf("\n\t\t\t\t\t\tQuantidade de veiculos no estacionamento: %d", quantidade(&s));
+		printf(":::CONTROLE DE ESTACIONAMENTO:::\t\tCAPACIDADE DE VEICULOS: %d\n\t\t\t\t\t\tVAGAS DISPONIVEIS: %d\n\n", TAMANHO, TAMANHO - quantidade(&s));
 		printf("\n___ESCOLHA AS OPCOES___\n");
 		printf("\n1. ENTRADA DE VEICULO");
 		printf("\n2. SAIDA DE VEICULO");
@@ -206,28 +196,26 @@ void exe(struct pilha *ps, struct veiculo *pv) {
 				printf(":::ENTRADA:::");
 				/*SE O ESTACIONAMENTO ESTIVER CHEIO, CONDICIONAL NÃO PERMITE A ENTRADA DO VEÍCULO*/
 				if(cheia(ps)) {
-					printf("\nNAO HA VAGAS\n");
+					printf(ANSI_COLOR_RED"\nNAO HA VAGAS"ANSI_COLOR_RESET);
 					printf("\nENTER para voltar as OPCOES");
 					printf("\nESC para sair do programa");
 					fexit(getch()); //CONTROLA O FECHAMENTO DO PROGRAMA USANDO A TECLA 'ESC'
 					exe(&s, &valorS); //CHAMA A FUNÇÃO PRINCIPAL NOVAMENTE E COMEÇA O PROGRAMA NOVAMENTE SEM ZERAR A MEMÓRIA
 				}
 				else {
-					printf("\nVAGA DISPONIVEL\n");
+					printf("\nVAGA DISPONIVEI");
 				}
-				printf("\nDigite o numero da PLACA ");
+				printf("\nDigite o numero da PLACA: ");
 				scanf("%d", &pv->placa);
-				validarPlaca();
-				placa = valorS.placa;
 				printf("______________________________\n");
-				/*QUANDO VEÍCULO ENTRA, AS MANOBRAS SÃO ZERADAS PARA QUE NÃO HAJA LIXO NA MEMÓRIA DE MANOBRAS*/
+				/*QUANDO VEÍCULO ENTRA AS MANOBRAS SÃO ZERADAS PARA QUE NÃO HAJA LIXO NA MEMÓRIA DE MANOBRAS*/
 				push(ps, pv->placa);
 				zeraManobra(ps);
 				break;
 			case 2:
-				/*SE TENTAR REMOVER UM CARRO COM O ESTACIONAMENTO JÁ VAZIO , PROGRAMA ALERTA USUÁRIO*/
+				/*SE TENTAR REMOVER UM CARRO COM O ESTACIONAMENTO JÁ VAZIO, PROGRAMA ALERTA USUÁRIO*/
 				if(vazia(ps)) {
-					printf("\nESTACIONAMENTO VAZIO!\n");
+					printf(ANSI_COLOR_RED"\nESTACIONAMENTO VAZIO!"ANSI_COLOR_RESET);
 					printf("\nENTER para voltar as OPCOES");
 					printf("\nESC para sair do programa");
 					fexit(getch()); //CONTROLA O FECHAMENTO DO PROGRAMA USANDO A TECLA 'ESC'
@@ -237,7 +225,7 @@ void exe(struct pilha *ps, struct veiculo *pv) {
 					char confirmar;
 					int conf;
 					printf(":::SAIDA:::");
-					printf("\nTem certeza que deseja remover o veiculo PLACA %d? S/N: ", ps->item[ps->topo]);
+					printf("\nTem certeza que deseja remover o carro de PLACA->%d? S/N: ", ps->item[ps->topo]);
 					fflush(stdin); //LIMPA UMA TECLA DIGITADA DA MEMÓRIA FLUSH, IMPORTANTE PARA A FUNÇÃO 'FCONFIRMAR' NÃO CAPTURAR UMA ENTRADA INDESEJADA
 					scanf("%c", &confirmar);
 					conf = fconfirmar(confirmar);
@@ -246,7 +234,7 @@ void exe(struct pilha *ps, struct veiculo *pv) {
 						qtdeMan = ps->topo;
 						pop(ps);
 						qtdeManobra(ps);
-						printf("\nQTDE manobras do veiculo PLACA %d: %d\n\n", ps->item[qtdeMan].placa, ps->item[qtdeMan].manobras); //VARIÁVEL 'qtdeMan' É USADA DENTRO DO ÍNDECE DE 'ITEM' PARA REPRESENTAR O ÚLTIMO VEÍCULO QUE SAIU, E A QUANTIDADE DE MANOBRAS
+						printf("\nQTDE manobras do VEICULO: %d", ps->item[qtdeMan].manobras); //VARIÁVEL 'qtdeMan' É USADA DENTRO DO ÍNDECE DE 'ITEM' PARA REPRESENTAR O ÚLTIMO VEÍCULO QUE SAIU, E A QUANTIDADE DE MANOBRAS
 						break;
 					}
 					else
@@ -259,13 +247,16 @@ void exe(struct pilha *ps, struct veiculo *pv) {
 		}
 		/*TODA VEZ QUE UMA OPERAÇÃO FOR REALIZADA E O ESTACIONAMENTO ESTIVER VAZIO, SERÁ MOSTRA UM ALERTA E NÃO SERÁ POSSÍVEL AVANÇAR*/
 		if(vazia(ps)) {
-			printf("\n\nESTACIONAMENTO VAZIO!\n");
+			printf("\nQuantidade de veiculos no estacionamento: %d", quantidade(ps));
+			printf(ANSI_COLOR_RED"\n\nESTACIONAMENTO VAZIO!"ANSI_COLOR_RESET);
 			getch();
 			exe(&s, &valorS); //APÓS A CONCLUSÃO DA OPERAÇÃO, A FUNCAO PRINCIPAL É CHAMADA E O PROGRAMA REINICIALIZADO SEM ZERAR OS DADOS DA MEMÓRIA
 		}
 		/*INFORMAÇÕES QUE IRÃO APARECER SEMPRE QUE UMA OPERAÇÃO BEM SUCEDIDA FOR REALIZADA, INCLUSIVE PARA O OPÇÃO '3'*/
-		if(op != 2)
-			mostraPilha(ps);
+		printf("\nUltimo veiculo que entrou: PLACA->%d", ps->item[ps->topo]);
+		printf("\nQuantidade de veiculos no estacionamento: %d", quantidade(ps));
+		mostraPilha(ps);
+		
 		printf("\n\n\nFIM DO PROGRAMA");
 		printf("\nENTER para voltar as OPCOES");
 		printf("\nESC para sair do programa");
@@ -293,7 +284,7 @@ int fconfirmarExit(char confirmar) {
 	}
 	/*BLOCO DE COMANDO CONSTRUIDO PARA CRIAR UM LOOP DE REPETIÇÃO SE A OPCAO DE SAIR DO PROGRAMA NÃO FOR SATISFEITA COM UMA CONFIRMAÇÃO EXIGIDA PELO PROGRAMA*/
 	else {
-		printf("\n\nOPCAO INVALIDA! digite s(sim) ou n(nao) ...");
+		printf(ANSI_COLOR_RED "\n\nOPCAO INVALIDA! digite s(sim) ou n(nao) ..." ANSI_COLOR_RESET);
 		int auxConfirmar; //VARIÁVEL CRIADA PARA RECEVER RETORNO DE '1' OU 'O' DA FUNÇÃO 'FCONFIRMAEXIT'
 		int auxExit = 0;
 		printf("\n\nTem certeza que deseja sair do programa? S/N: ");
@@ -321,40 +312,9 @@ void fexit(char pexit) {
 			exit(0); //FECHAR PROGRAMA
 		}
 		if(auxConfirmar == 0) { //SE A OPÇÃO FOR 'N' OU 'n'
-			printf("\n\nENTER para voltar as OPCOES");
-			printf("\nESC para sair do programa");
-			fexit(getch()); //CHAMA A FUNÇÃO DE CONTROLE DE FECHAMENTO NOVAMENTE FAZENDO UM LAÇO DE REPETIÇÃO
-		}
-	}
-	exe(&s, &valorS);
-}
-void validarPlaca() {
-	int auxpop, auxplaca, placaIgual;
-	struct pilha auxp;
-	inicializar(&auxp);
-	if(valorS.placa == 0) {
-		printf("\nPLACA nao pode ser 0\n\n");
-		printf("\nENTER para voltar as OPCOES");
+		printf("\n\nENTER para voltar as OPCOES");
 		printf("\nESC para sair do programa");
-		fexit(getch());
-	}
-	placaIgual = 0;
-	auxplaca = valorS.placa;
-	while(!vazia(&s)) {
-		auxpop = pop(&s);
-		if(auxpop == auxplaca) {
-			placaIgual = 1;
+		fexit(getch()); //CHAMA A FUNÇÃO DE CONTROLE DE FECHAMENTO NOVAMENTE FAZENDO UM LAÇO DE REPETIÇÃO
 		}
-		push(&auxp, auxpop);
-	}
-	while(!vazia(&auxp)) {
-		auxpop = pop(&auxp);
-		push(&s, auxpop);
-	}
-	if(placaIgual) {
-		printf("\nPLACA ja existe no estacionamento! operacao cancelada\n\n");
-		printf("\nENTER para voltar as OPCOES");
-		printf("\nESC para sair do programa");
-		fexit(getch());
 	}
 }
