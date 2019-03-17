@@ -215,7 +215,7 @@ void exe(struct pilha *ps, struct veiculo *pv) {
 				else {
 					printf("\nVAGA DISPONIVEL\n");
 				}
-				printf("\nDigite o numero da PLACA ");
+				printf("\nDigite o numero da PLACA: ");
 				scanf("%d", &pv->placa);
 				validarPlaca();
 				placa = valorS.placa;
