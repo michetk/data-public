@@ -25,8 +25,8 @@ struct pilha {
 void inicializar(struct pilha *ps);
 int cheia(struct pilha *ps);
 int vazia(struct pilha *ps);
-void push(struct pilha *ps, int x);
-int pop(struct pilha *ps);
+void push(struct pilha *ps, struct veiculo x);
+struct veiculo pop(struct pilha *ps);
 int quantidade(struct pilha *ps);
 void mostraPilha(struct pilha *ps);
 void menu(int *op, int aux); //MENU DE CONTROLE DE OPÇÕES
@@ -66,22 +66,22 @@ int vazia(struct pilha *ps) {
 	else
 		return 0;
 }
-void push(struct pilha *ps, int x) {
+void push(struct pilha *ps, struct veiculo x) {
 	if(cheia(ps)) {
 		printf("\nPilha cheia");
 		getchar();
 	}
 	else
-		ps->item[++(ps->topo)].placa = x;
+		ps->item[++(ps->topo)] = x;
 }
-int pop(struct pilha *ps) {
+struct veiculo pop(struct pilha *ps) {
 	if(vazia(ps)) {
 		printf("\nPilha vazia");
 		getchar();
-		return -1;
+		return ps->item[ps->topo];
 	}
 	else
-		return ps->item[ps->topo--].placa;
+		return ps->item[ps->topo--];
 }
 int quantidade(struct pilha *ps) {
 	struct pilha aux;
@@ -91,13 +91,13 @@ int quantidade(struct pilha *ps) {
 	if(vazia(ps))
 		return qtde;
 	while(!vazia(ps)) {
-		x.placa = pop(ps);
-		push(&aux, x.placa);
+		x = pop(ps);
+		push(&aux, x);
 	}
 	while(!vazia(&aux)) {
-		x.placa = pop(&aux);
+		x = pop(&aux);
 		qtde++;
-		push(ps, x.placa);
+		push(ps, x);
 	}
 	return qtde;
 }
@@ -109,13 +109,13 @@ void mostraPilha(struct pilha *ps) {
 	if(vazia(ps))
 		printf("\nESTACIONAMENTO vazio\n");
 	while(!vazia(ps)) {
-		x.placa = pop(ps);
-		push(&aux, x.placa);
+		x = pop(ps);
+		push(&aux, x);
 	}
 	printf("\n");
 	while(!vazia(&aux)) {
-		x.placa = pop(&aux);
-		push(ps, x.placa);
+		x = pop(&aux);
+		push(ps, x);
 		printf("\n--> POSICAO(%d) contem PLACA %d ::::: QTDE manobras: %d", cont, x.placa, ps->item[ps->topo].manobras);
 		cont++;
 	}
@@ -185,12 +185,12 @@ void qtdeManobra(struct pilha *ps) {
 	struct veiculo x;
 	inicializar(&aux);
 	while(!vazia(ps)) {
-		x.placa = pop(ps);
-		push(&aux, x.placa);
+		x = pop(ps);
+		push(&aux, x);
 	}
 	while(!vazia(&aux)) {
-		x.placa = pop(&aux);
-		push(ps, x.placa);
+		x = pop(&aux);
+		push(ps, x);
 		ps->item[ps->topo].manobras++; //SOMA '1' SOBRE A MANOBRA DO VEICULO
 	}
 }
@@ -221,7 +221,7 @@ void exe(struct pilha *ps, struct veiculo *pv) {
 				placa = valorS.placa;
 				printf("______________________________\n");
 				/*QUANDO VEÍCULO ENTRA, AS MANOBRAS SÃO ZERADAS PARA QUE NÃO HAJA LIXO NA MEMÓRIA DE MANOBRAS*/
-				push(ps, pv->placa);
+				push(ps, valorS);
 				zeraManobra(ps);
 				break;
 			case 2:
@@ -329,7 +329,9 @@ void fexit(char pexit) {
 	exe(&s, &valorS);
 }
 void validarPlaca() {
-	int auxpop, auxplaca, placaIgual;
+	int placaIgual;
+	struct veiculo auxplaca;
+	struct veiculo auxpop;
 	struct pilha auxp;
 	inicializar(&auxp);
 	if(valorS.placa == 0) {
@@ -339,10 +341,10 @@ void validarPlaca() {
 		fexit(getch());
 	}
 	placaIgual = 0;
-	auxplaca = valorS.placa;
+	auxplaca.placa = valorS.placa;
 	while(!vazia(&s)) {
 		auxpop = pop(&s);
-		if(auxpop == auxplaca) {
+		if(auxpop.placa == auxplaca.placa) {
 			placaIgual = 1;
 		}
 		push(&auxp, auxpop);
