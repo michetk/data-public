@@ -58,7 +58,7 @@ int filaRetira(struct fila *pf) {
 			return aux;
 		}
 		else {
-			return pf->item[pf->inicio--];
+			return pf->item[pf->inicio++];
 		}
 	}
 }
@@ -78,7 +78,7 @@ void furaFila(struct fila *pf, int x) {
 		}
 	}
 }
-void intercalaFilas(struct fila *pf1, struct fila *pf2, struct fila *pf3) {
+void intercalaFila(struct fila *pf1, struct fila *pf2, struct fila *pf3) {
 	int aux;
 	if(filaCheia(pf3)) {
 		printf("\nFila cheia!");
@@ -114,10 +114,6 @@ void filaOrdenada(struct fila *pf1, struct fila *pf2, struct fila *pf3) {
 		getch();
 	}
 	while((!filaVazia(pf1) || !filaVazia(pf2)) && !filaCheia(pf3)) {
-		if(filaCheia(pf3)) {
-			printf("\nFila cheia!");
-			getch();
-		}
 		if(filaVazia(pf1)) {
 			auxpf2 = filaRetira(pf2);
 			filaRecebe(pf3, auxpf2);
@@ -128,19 +124,39 @@ void filaOrdenada(struct fila *pf1, struct fila *pf2, struct fila *pf3) {
 				filaRecebe(pf3, auxpf1);
 			}
 		else {
-			if(!filaVazia(pf1) || !filaVazia(pf2)) {
+			if(!filaVazia(pf1) && !filaVazia(pf2)) {
 				auxpf1 = filaRetira(pf1);
 				auxpf2 = filaRetira(pf2);
-				if(auxpf1 < auxpf2) {
+				if(auxpf1 <= auxpf2) {
 					filaRecebe(pf3, auxpf1);
 					furaFila(pf2, auxpf2);
 				}
+				else {
+					filaRecebe(pf3, auxpf2);
+					furaFila(pf1, auxpf1);
+				}
 			}
-			else {
-				filaRecebe(pf3, auxpf2);
-				furaFila(pf1, auxpf1);
-			}
-		}	
+		}
+	}
+}
+void retiraElemento(struct fila *pf, int x) {
+	struct fila aux;
+	int y;
+	filaInicializa(&aux);
+	if(filaVazia(pf)) {
+		printf("\nFila vazia");
+		getch();
+	}
+	while(!filaVazia(pf)) {
+		y = filaRetira(pf);
+		filaRecebe(&aux, y);
+	}
+	filaInicializa(pf);
+	while(!filaVazia(&aux)) {
+		y = filaRetira(&aux);
+		if(y != x) {
+			filaRecebe(pf, y);
+		}
 	}
 }
 int main() {
@@ -161,8 +177,14 @@ int main() {
 	filaRecebe(&f2, 4);
 	filaRecebe(&f2, 12);
 	
-	filaOrdenada(&f1, &f2, &f3);
-	mostraFila(&f3);
+	//intercalaFila(&f1, &f2, &f3);
+	//mostraFila(&f3);
+	
+	//filaOrdenada(&f1, &f2, &f3);
+	//mostraFila(&f3);
+	
+	//retiraElemento(&f1, 7);
+	//mostraFila(&f1);
 	
 
 	printf("\n\n\n:::FIM DO PROGRAMA:::");
