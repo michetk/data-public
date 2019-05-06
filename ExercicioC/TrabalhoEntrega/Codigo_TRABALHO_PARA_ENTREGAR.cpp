@@ -1,7 +1,6 @@
 /*
 :::: TRABALHO ESTRUTURA DE DADOS I ::::
 
-*Pode ser desenvolvido em até duas pessoas
 ______________________________________________
 
 
@@ -56,8 +55,15 @@ ele, ou seja, disc deve ter o valor igual a NULL.
 #include<conio.h>
 #include<string.h>
 #define NOMEALUNO 50
+#define NOMEDISCIPLINA 50
 
 
+struct listaAluno{
+	int codigo;
+	char nome[NOMEALUNO];
+	struct listaAluno *proximo;
+	struct listaDisciplina *disc;
+};
 struct listaDisciplina{
 	int codigo;
 	char nome[NOMEALUNO];
@@ -65,47 +71,40 @@ struct listaDisciplina{
 	float frequencia;
 	struct listaDisciplina *proximo;
 };
-struct listaAluno{
-	int codigo;
-	char nome[NOMEALUNO];
-	struct listaAluno *proximo;
-	struct listaDisciplina *disc;
-};
 
-//funcões Aluno
-//funcões de INSERÇÃO
-struct listaAluno *insereInicioAluno(struct listaAluno *paluno, int x, char n[50]) {
+//Funções da estrutura aluno
+struct listaAluno *insereInicioAluno(struct listaAluno *paluno, int px, char pn[NOMEALUNO]) {
 	struct listaAluno *aux;
-	aux = (listaAluno*)malloc(sizeof(listaAluno));
-	aux->codigo = x;
-	strcpy(aux->nome, n);
+	aupx = (listaAluno*)malloc(sizeof(listaAluno));
+	aux->codigo = px;
+	strcpy(aux->nome, pn);
 	aux->disc = NULL;
 	aux->proximo = paluno;
 	paluno = aux;
 	return paluno;
 }
-void insereDepoisAluno(struct listaAluno *paluno, int x, char n[50]) {
+void insereDepoisAluno(struct listaAluno *paluno, int px, char pn[NOMEALUNO]) {
 	struct listaAluno *aux;
 	aux = (listaAluno*)malloc(sizeof(listaAluno));
-	aux->codigo = x;
-	strcpy(aux->nome, n);
+	aux->codigo = px;
+	strcpy(aux->nome, pn);
 	aux->disc = NULL;
 	aux->proximo = paluno->proximo;
 	paluno->proximo = aux;
 }
-struct listaAluno *insereOrdenadoAluno(struct listaAluno *paluno, int x, char n[50]) {
+struct listaAluno *insereOrdenadoAluno(struct listaAluno *paluno, int px, char pn[NOMEALUNO]) {
 	struct listaAluno *p, *q;
-	if(paluno == NULL || x < paluno->codigo) {
-		return insereInicioAluno(paluno, x, n);
+	if(paluno == NULL || px < paluno->codigo) {
+		return insereInicioAluno(paluno, px, pn);
 	}
 	p = paluno;
 	q = p;
-	while((q != NULL) && (q->codigo < x)){
+	while(q != NULL && q->codigo < px){
 		p = q;
 		q = p->proximo;
 	}
-	if((q == NULL) || (q->codigo > x)) {
-		insereDepoisAluno(p, x, n);
+	if(q == NULL || q->codigo > px) {
+		insereDepoisAluno(p, px, pn);
 	}
 	else {
 		printf("\nAluno ja cadastrado!");
@@ -114,6 +113,11 @@ struct listaAluno *insereOrdenadoAluno(struct listaAluno *paluno, int x, char n[
 }
 struct listaAluno *removeInicioAluno(struct listaAluno *paluno) {
 	struct listaAluno *aux;
+	if(paluno == NULL) {
+		printf("nLista aluno vazia!");
+		getch();
+		return paluno;
+	}
 	aux = paluno;
 	paluno = paluno->proximo;
 	free(aux);
@@ -125,57 +129,29 @@ void removeDepoisAluno(struct listaAluno *paluno) {
 	paluno->proximo = aux->proximo;
 	free(aux);
 }
-struct listaAluno *removeOrdenadoAluno(struct listaAluno *paluno, int x) {
+struct listaAluno *removeOrdenadoAluno(struct listaAluno *paluno, int px) {
 	struct listaAluno *p, *q;
 	if(paluno == NULL) {
 		printf("\nRegistro Vazio!");
 		getch();
 		return paluno;
 	}
-	if(x == paluno->codigo) {
+	if(px == paluno->codigo) {
 		return (removeInicioAluno(paluno));
 	}
 	p = paluno;
 	q = p;
-	while(q != NULL && q->codigo < x) {
+	while(q != NULL && q->codigo < px) {
 		p = q;
 		q = p->proximo;
 	}
-	if(q != NULL && q->codigo == x) {
+	if(q != NULL && q->codigo == px) {
 		removeDepoisAluno(p);
 	}
 	else {
 		printf("\nAluno nao cadastrado!");
 	}
 	return paluno;
-}
-struct listaAluno *alteraAluno(struct listaAluno *paluno, int x) {
-	char nome[NOMEALUNO];
-	struct listaAluno *p, *q;
-	if(paluno == NULL) {
-		printf("\nRegistro vazio!");
-		getch();
-		return paluno;
-	}
-	if(x == paluno->codigo) {
-		printf("\nDigite o nome do aluno: ");
-		fflush(stdin);
-		gets(nome);
-		strcpy(paluno->nome, nome);
-	}
-	return paluno;
-}
-void opcao(int *op) {
-	do{
-		system("cls");
-		printf("\n1. Buscar");
-		printf("\n2. Inserir");
-		printf("\n3. Alterar");
-		printf("\n4. Mostar");
-		printf("\n5. Excluir");
-		printf("\nDigite a opcao: ");
-		scanf("%d", op);
-	}while(*op < 1 || *op > 5);
 }
 void mostraAluno(struct listaAluno *paluno) {
 	struct listaAluno *aux;
@@ -186,6 +162,118 @@ void mostraAluno(struct listaAluno *paluno) {
 	}
 	getch();
 }
+struct listaAluno *consultaAluno(struct listaAluno *paluno, int px) {
+	struct listaAluno *p, *q;
+	p = paluno;
+	if(p == NULL) {
+		printf("\nLista vazia!");
+		getch();
+		return paluno;
+	}
+	if(p->codigo == px) {
+		printf("\nAluno[%d] :::: Nome: %s", p->codigo, p->nome);
+		getch();
+		return p;
+	}
+	q = p;
+	while(q != NULL && q->codigo < px) {
+		p = q;
+		q = p->proximo;
+	}
+	if(q != NULL && q->codigo == px) {
+		printf("\nAluno[%d] :::: Nome: %s", q->codigo, q->nome);
+		getch();
+	}
+	else {
+		printf("\nAluno nao cadastrado!");
+		getch();
+		return paluno;
+	}
+	return q;
+}
+void alteraAluno(struct listaAluno *paluno, int px) {
+	struct listaAluno *aux;
+	aux = consultaAluno(paluno, px);
+	if(aux->codigo == px) {
+		printf("\nDigite o nome do aluno: ");
+		fflush(stdin);
+		gets(aux->nome);
+	}
+}
+
+//Funções da estrutura disciplina
+struct listaDisciplina *insereInicioDisciplina(struct listaDisciplina *pdisc, int px, pn[NOMEDISCIPLINA], float pnt, float pf) {
+	struct listaDisciplina *aux;
+	aux = (struct listaDisciplina*)malloc(sizeof(struct listaDisciplina));
+	aux->codigo = px;
+	strcpy(aux->nome, pn);
+	aux->nota = pnt;
+	aux->frequencia = pf;
+	aux->proximo = pdisc;
+	pdisc = aux;
+	return pdisc;
+}
+void insereDepoisDisciplina(struct listaDisciplina *pdisc, int px, pn[NOMEDISCIPLINA], float pnt, float pf) {
+	struct listaDisciplina *aux;
+	aux = (struct listaDisciplina*)malloc(sizeof(struct listaDisciplina));
+	aux->codigo = px;
+	strcpy(aux->nome, pn);
+	aux->nota = pnt;
+	aux->frequencia = pf;
+	aux->proximo = pdisc->proximo;
+	pdisc->proximo = aux;
+}
+struct listaDisciplina *insereOrdenadoDisciplina(struct listaDisciplina *pdisc, int px, pn[NOMEDISCIPLINA], float pnt, float pf) {
+	struct listaDisciplina *p, *q;
+	if(pdisc == NULL || px < pdisc->codigo) {
+		return insereInicioDisciplina(pdisc, px, pn, pnt, pf);
+	}
+	p = pdisc;
+	q = p;
+	while(q != NULL && q->codigo < px) {
+		p = q;
+		q = p->proximo;
+	}
+	if(q != NULL && q->codigo > px) {
+		insereDepoisDisciplina(p, px, pn, pnt, pf);
+	}
+	else {
+		printf("\nDisciplina ja cadastrada!");
+	}
+	return pdisc;
+}
+struct listaDisciplina *removeInicioDisciplina(struct listaDisciplina *pdisc) {
+	struct listaDisciplina *aux;
+	if(pdisc == NULL) {
+		printf("\nLista disciplina vazia!");
+		getch();
+		return pdisc;
+	}
+	pdisc = pdisc->proximo;
+	return pdisc;
+}
+void removeDepoisDisciplina(struct listaDisciplina *pdisc) {
+	struct listaDisciplina *aux;
+	aux = pdisc->proximo;
+	pdisc->proximo = aux->proximo;
+	free(aux);
+}
+
+//Funções genericas
+void opcao(int *op) {
+	do{
+		system("cls");
+		printf("\n1. Buscar");
+		printf("\n2. Inserir");
+		printf("\n3. Alterar");
+		printf("\n4. Mostar");
+		printf("\n5. Excluir");
+		printf("\n6. Sair");
+		printf("\nDigite a opcao: ");
+		scanf("%d", op);
+	}while(*op < 1 || *op > 6);
+}
+
 
 
 int main() {
@@ -212,6 +300,9 @@ int main() {
 		
 		switch(op) {
 			case 1:
+				printf("\nCodigo do aluno para consulta: ");
+				scanf("%d", &codigo);
+				consultaAluno(al, codigo);
 				break;
 			case 2:
 				printf("\nDigite o codigo do aluno: ");
@@ -224,7 +315,7 @@ int main() {
 			case 3:
 				printf("\nCodigo do aluno que deseja alterar: ");
 				scanf("%d", &codigo);
-				al = alteraAluno(al, codigo);
+				alteraAluno(al, codigo);
 				break;
 			case 4:
 				mostraAluno(al);
@@ -234,6 +325,8 @@ int main() {
 				scanf("%d", &codigo);
 				al = removeOrdenadoAluno(al, codigo);
 				break;
+			case 6:
+				exit(0);
 			default:
 				break;
 		}
