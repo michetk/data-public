@@ -1,0 +1,49 @@
+Trabalho de Programação Orientada a Objetos
+
+Escrever uma classe denominada de Data com os seguinter atributos:
+
+int dia, mes, ano;
+
+metodos: 
+
+void alteraData(int dia, int mes, int ano) - realizar a consistencia dos parametros:
+  dia - valores entre 1 e 31 ( verificar os meses para atribuir os dias)
+  mes - valores entre 1 e 12
+  ano - aceitar valores maiores iguais a 1919
+
+get para cada um dos atributos
+
+boolean comparaData (Data data) - retorna true se as datas forem iguais. Retorna false se forem diferentes
+
+boolean comparaDiaMes(Data data) - retorna true se o mes e o dia das datas forem iguais.
+Caso Contrário retorna falso.
+
+
+Escrever uma classe denominada de Agenda com os seguintes atributos e metodos:
+atributos:
+   Contato contatos[] - vetor de contatos, Pelo polimorfismo podemos 
+   armazenar nesse vetor todas as subclasses da classe contato.
+
+metodos:
+   void adicionaContato (Contato contato) - adiciona o parametro contato no 
+   vetor contatos. Prever vetor cheio
+
+   void retiraContato (String nome) - retira ( atribuir null) do vetor contatos o contato
+     que tenha nome igual ao parametro nome
+
+   void mostraContatoPessoal() - percorrer o vetor contatos e mostrar todos os contatos pessoais
+   presentes no vetor contatos
+
+   void mostraContatoProfessional() - percorrer o vetor contatos e mostrar todos os 
+   contatos profissionais presente no vetor contatos
+
+   Contato buscaContato (String nome) - percorre o vetor contatos até encontrar um contato
+   que tenha o nome igual ao parametro nome. Se encontrar, retornar o contato encontrado.
+   Se não encontra, retornar null
+
+   void mostraAniversariantes (Data dataAniversario) percorre o vetor contatos e mostrar todos
+   os contatos pessoais que tenha data de aniversário igual ao parametro informado
+
+   void mostraEmpresaRamos ( String ramoEmpresa) - percorrer o vetor contatos e mostrar todos
+   os contatos profissionais que tenham o atributo ramoEmpresa igual ao parametro informado
+   
