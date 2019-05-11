@@ -132,7 +132,7 @@ void removeDepoisAluno(struct listaAluno *paluno) {
 struct listaAluno *removeOrdenadoAluno(struct listaAluno *paluno, int px) {
 	struct listaAluno *p, *q;
 	if(paluno == NULL) {
-		printf("\nRegistro Vazio!");
+		printf("\nNao ha aluno cadastrado!");
 		getch();
 		return paluno;
 	}
@@ -258,7 +258,31 @@ void removeDepoisDisciplina(struct listaDisciplina *pdisc) {
 	pdisc->proximo = aux->proximo;
 	free(aux);
 }
-
+struct listaDisciplina *removeOrdenadoDisciplina(struct listaDisciplina *pdisc, int px) {
+	struct listaDisciplina *p, *q;
+	if(pdisc == NULL) {
+		print("\nNao ha disciplina cadastrada!");
+		getch();
+		return pdisc;
+	}
+	if(pdisc->codigo == px) {
+		return removeInicioDisciplina(pdisc);
+	}
+	p = pdisc;
+	q = p;
+	while(p != NULL && p->codigo < px) {
+		p = q;
+		q = p->proximo;
+	}
+	if(q != NULL && p->codigo == px) {
+		removeDepoisDisciplina(p);
+	}
+	else {
+		printf("\nDisciplina nao cadastrada!");
+	}
+	return pdisc;
+	
+}
 //Funções genericas
 void opcao(int *op) {
 	do{
