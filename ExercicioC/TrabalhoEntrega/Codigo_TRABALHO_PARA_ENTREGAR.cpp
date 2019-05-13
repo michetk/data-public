@@ -75,7 +75,7 @@ struct listaDisciplina{
 //Funções da estrutura aluno
 struct listaAluno *insereInicioAluno(struct listaAluno *paluno, int px, char pn[NOMEALUNO]) {
 	struct listaAluno *aux;
-	aupx = (listaAluno*)malloc(sizeof(listaAluno));
+	aux = (listaAluno*)malloc(sizeof(listaAluno));
 	aux->codigo = px;
 	strcpy(aux->nome, pn);
 	aux->disc = NULL;
@@ -168,7 +168,7 @@ struct listaAluno *consultaAluno(struct listaAluno *paluno, int px) {
 	if(p == NULL) {
 		printf("\nLista vazia!");
 		getch();
-		return paluno;
+		return p;
 	}
 	if(p->codigo == px) {
 		printf("\nAluno[%d] :::: Nome: %s", p->codigo, p->nome);
@@ -187,7 +187,6 @@ struct listaAluno *consultaAluno(struct listaAluno *paluno, int px) {
 	else {
 		printf("\nAluno nao cadastrado!");
 		getch();
-		return paluno;
 	}
 	return q;
 }
@@ -202,7 +201,7 @@ void alteraAluno(struct listaAluno *paluno, int px) {
 }
 
 //Funções da estrutura disciplina
-struct listaDisciplina *insereInicioDisciplina(struct listaDisciplina *pdisc, int px, pn[NOMEDISCIPLINA], float pnt, float pf) {
+struct listaDisciplina *insereInicioDisciplina(struct listaDisciplina *pdisc, int px, char pn[NOMEDISCIPLINA], float pnt, float pf) {
 	struct listaDisciplina *aux;
 	aux = (struct listaDisciplina*)malloc(sizeof(struct listaDisciplina));
 	aux->codigo = px;
@@ -213,7 +212,7 @@ struct listaDisciplina *insereInicioDisciplina(struct listaDisciplina *pdisc, in
 	pdisc = aux;
 	return pdisc;
 }
-void insereDepoisDisciplina(struct listaDisciplina *pdisc, int px, pn[NOMEDISCIPLINA], float pnt, float pf) {
+void insereDepoisDisciplina(struct listaDisciplina *pdisc, int px, char pn[NOMEDISCIPLINA], float pnt, float pf) {
 	struct listaDisciplina *aux;
 	aux = (struct listaDisciplina*)malloc(sizeof(struct listaDisciplina));
 	aux->codigo = px;
@@ -223,7 +222,7 @@ void insereDepoisDisciplina(struct listaDisciplina *pdisc, int px, pn[NOMEDISCIP
 	aux->proximo = pdisc->proximo;
 	pdisc->proximo = aux;
 }
-struct listaDisciplina *insereOrdenadoDisciplina(struct listaDisciplina *pdisc, int px, pn[NOMEDISCIPLINA], float pnt, float pf) {
+struct listaDisciplina *insereOrdenadoDisciplina(struct listaDisciplina *pdisc, int px, char pn[NOMEDISCIPLINA], float pnt, float pf) {
 	struct listaDisciplina *p, *q;
 	if(pdisc == NULL || px < pdisc->codigo) {
 		return insereInicioDisciplina(pdisc, px, pn, pnt, pf);
@@ -261,7 +260,7 @@ void removeDepoisDisciplina(struct listaDisciplina *pdisc) {
 struct listaDisciplina *removeOrdenadoDisciplina(struct listaDisciplina *pdisc, int px) {
 	struct listaDisciplina *p, *q;
 	if(pdisc == NULL) {
-		print("\nNao ha disciplina cadastrada!");
+		printf("\nNao ha disciplina cadastrada!");
 		getch();
 		return pdisc;
 	}
@@ -283,6 +282,57 @@ struct listaDisciplina *removeOrdenadoDisciplina(struct listaDisciplina *pdisc, 
 	return pdisc;
 	
 }
+void mostraDisciplina(struct listaDisciplina *pdisc) {
+	struct listaDisciplina *aux;
+	if(pdisc == NULL) {
+		printf("\nLista disciplina vazia!");
+		getch();
+	}
+	aux = pdisc;
+	while(aux != NULL) {
+		printf("\nDisciplina[%d] :::: Nome: %s", aux->codigo, aux->nome);
+		aux = aux->proximo;
+	}
+	getch();
+}
+struct listaDisciplina *consultaDisciplina(struct listaDisciplina *pdisc, int px) {
+	struct listaDisciplina *p, *q;
+	p = pdisc;
+	if(p == NULL) {
+		printf("\nLista disciplina vazia!");
+		getch();
+		return p;
+	}
+	if(p->codigo == px) {
+		printf("\nDisciplina[%d] :::: Nome: %s", p->codigo, p->nome);
+		getch();
+		return p;
+	}
+	q = p;
+	while(q != NULL && q->codigo < px) {
+		p = q;
+		q = p->proximo;
+	}
+	if(q != NULL && q->codigo == px) {
+		printf("\nDisciplina[%d] :::: Nome: %s", q->codigo, q->nome);
+		getch();
+	}
+	else {
+		printf("\nDisciplina nao cadastrada!");
+		getch();
+	}
+	return q;
+}
+void alteraDisciplina(struct listaDisciplina *pdisc, int px) {
+	struct listaDisciplina *aux;
+	aux = consultaDisciplina(pdisc, px);
+	if(aux->codigo == px) {
+		printf("\nDigite o nome da Disciplina: ");
+		fflush(stdin);
+		gets(aux->nome);
+	}
+}
+
 //Funções genericas
 void opcao(int *op) {
 	do{
@@ -305,6 +355,7 @@ int main() {
 	int codigo;
 	char nome[NOMEALUNO];
 	struct listaAluno *al;
+	
 	al = NULL;
 	
 	al = insereOrdenadoAluno(al, 11, "Barros");
