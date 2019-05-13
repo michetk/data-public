@@ -233,7 +233,7 @@ struct listaDisciplina *insereOrdenadoDisciplina(struct listaDisciplina *pdisc, 
 		p = q;
 		q = p->proximo;
 	}
-	if(q != NULL && q->codigo > px) {
+	if(q == NULL || q->codigo > px) {
 		insereDepoisDisciplina(p, px, pn, pnt, pf);
 	}
 	else {
@@ -334,82 +334,169 @@ void alteraDisciplina(struct listaDisciplina *pdisc, int px) {
 }
 
 //Funções genericas
-void opcao(int *op) {
+void opcaoAlunoDisciplina(int *op) {
 	do{
 		system("cls");
+		printf("_____CONTROLE DISCIPLINAR_____\n\n");
+		printf("\n1. ALUNO");
+		printf("\n2. DISCIPLINA");
+		printf("\n3. SAIR");
+		printf("\n\nDigite a opcao: ");
+		scanf("%d", op);
+	}while(*op < 1 || *op > 3);
+}
+void opcaoAluno(int *op) {
+	do{
+		system("cls");
+		printf("_____ALUNO_____\n\n");
 		printf("\n1. Buscar");
 		printf("\n2. Inserir");
 		printf("\n3. Alterar");
 		printf("\n4. Mostar");
 		printf("\n5. Excluir");
-		printf("\n6. Sair");
-		printf("\nDigite a opcao: ");
+		printf("\n6. Menu Principal");
+		printf("\n7. Sair");
+		printf("\n\nDigite a opcao: ");
 		scanf("%d", op);
-	}while(*op < 1 || *op > 6);
+	}while(*op < 1 || *op > 7);
 }
-
-
-
-int main() {
-	int op;
+void opcaoDisciplina(int *op) {
+	do{
+		system("cls");
+		printf("_____DISCIPLINA_____\n\n");
+		printf("\n1. Buscar");
+		printf("\n2. Inserir");
+		printf("\n3. Alterar");
+		printf("\n4. Mostar");
+		printf("\n5. Excluir");
+		printf("\n6. Menu Principal");
+		printf("\n7. Sair");
+		printf("\n\nDigite a opcao: ");
+		scanf("%d", op);
+	}while(*op < 1 || *op > 7);
+}
+void exeAluno(int *op, struct listaAluno *paluno) {
 	int codigo;
 	char nome[NOMEALUNO];
-	struct listaAluno *al;
-	
-	al = NULL;
-	
-	al = insereOrdenadoAluno(al, 11, "Barros");
-	al = insereOrdenadoAluno(al, 9, "Miguel");
-	al = insereOrdenadoAluno(al, 10, "Sousa");
-	al = insereOrdenadoAluno(al, 12, "Lucas");
-	
-	/*mostraAluno(al);
-	
-	al = removeOrdenadoAluno(al, 10);
-	
-	printf("\n");
-	mostraAluno(al);*/
-	
-	do{
-		opcao(&op);
-		
-		switch(op) {
-			case 1:
-				printf("\nCodigo do aluno para consulta: ");
+	opcaoAluno(op);
+	switch(*op) {
+		case 1:
+			printf("\nCodigo do aluno para consulta: ");
+			scanf("%d", &codigo);
+			consultaAluno(paluno, codigo);
+			break;
+		case 2:
+			printf("\nDigite o codigo do aluno: ");
+			scanf("%d", &codigo);
+			printf("\nDigite o nome do aluno: ");
+			fflush(stdin);
+			gets(nome);
+			paluno = insereOrdenadoAluno(paluno, codigo, nome);
+			break;
+		case 3:
+			printf("\nCodigo do aluno que deseja alterar: ");
+			scanf("%d", &codigo);
+			alteraAluno(paluno, codigo);
+			break;
+		case 4:
+			mostraAluno(paluno);
+			break;
+		case 5:
+			printf("\nCodigo do aluno que deseja remover: ");
+			scanf("%d", &codigo);
+			paluno = removeOrdenadoAluno(paluno, codigo);
+			break;
+		case 6:
+			break;
+		case 7:
+			exit(0);
+		default:
+			break;
+	}
+}
+void exeDisciplina(int *op, struct listaDisciplina *pdisc) {
+	int codigo;
+	char nome[NOMEALUNO];
+	float nota, frequencia;
+	opcaoAluno(op);
+	switch(*op) {
+		case 1:
+				printf("\nCodigo da disciplina para consulta: ");
 				scanf("%d", &codigo);
-				consultaAluno(al, codigo);
+				consultaDisciplina(pdisc, codigo);
 				break;
 			case 2:
-				printf("\nDigite o codigo do aluno: ");
+				printf("\nDigite o codigo da disciplina: ");
 				scanf("%d", &codigo);
-				printf("\nDigite o nome do aluno: ");
+				printf("\nDigite o nome da disciplina: ");
 				fflush(stdin);
 				gets(nome);
-				al = insereOrdenadoAluno(al, codigo, nome);
+				pdisc = insereOrdenadoDisciplina(pdisc, codigo, nome, nota, frequencia);
 				break;
 			case 3:
-				printf("\nCodigo do aluno que deseja alterar: ");
+				printf("\nCodigo da disicplina que deseja alterar: ");
 				scanf("%d", &codigo);
-				alteraAluno(al, codigo);
+				alteraDisciplina(pdisc, codigo);
 				break;
 			case 4:
-				mostraAluno(al);
+				mostraDisciplina(pdisc);	
 				break;
 			case 5:
-				printf("\nCodigo do aluno que deseja remover: ");
+				printf("\nCodigo da disicplina que deseja remover: ");
 				scanf("%d", &codigo);
-				al = removeOrdenadoAluno(al, codigo);
+				pdisc = removeOrdenadoDisciplina(pdisc, codigo);
 				break;
 			case 6:
+				break;
+			case 7:
 				exit(0);
 			default:
 				break;
+	}
+}
+void exePrincipal(int *op, struct listaAluno *paluno, struct listaDisciplina *pdisc) {
+	
+	paluno = insereOrdenadoAluno(paluno, 11, "Barros");
+	paluno = insereOrdenadoAluno(paluno, 9, "Miguel");
+	paluno = insereOrdenadoAluno(paluno, 10, "Sousa");
+	paluno = insereOrdenadoAluno(paluno, 12, "Lucas");
+	
+	pdisc = insereOrdenadoDisciplina(pdisc, 1, "MD", 0, 0);
+	pdisc = insereOrdenadoDisciplina(pdisc, 2, "ED", 0, 0);
+	pdisc = insereOrdenadoDisciplina(pdisc, 5, "POO", 0, 0);
+	pdisc = insereOrdenadoDisciplina(pdisc, 10, "Matemática discreta", 0, 0);
+	
+	
+	do{
+		opcaoAlunoDisciplina(op);
+		
+		if(*op == 3) exit(0);
+		if(*op == 1) {
+			do {
+				exeAluno(op, paluno);
+				if(*op == 6) exePrincipal(op, paluno, pdisc);
+			}while(1);
+		}
+		if(*op == 2) {
+			do {
+				exeDisciplina(op, pdisc);
+				if(*op == 6) exePrincipal(op, paluno, pdisc);
+			}while(1);
 		}
 	}while(1);
+}
+
+int main() {
+	int op;
+	struct listaAluno *al;
+	struct listaDisciplina *disc;
 	
+	al = NULL;
+	disc = NULL;
 	
+	exePrincipal(&op, al, disc);
+		
 	
-	//mostraAluno(al);
 	
 	
 	printf("\n\n\nFIM DO PROGRAMA!!!");
