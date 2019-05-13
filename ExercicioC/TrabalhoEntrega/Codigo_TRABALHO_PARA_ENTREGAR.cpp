@@ -58,18 +58,18 @@ ele, ou seja, disc deve ter o valor igual a NULL.
 #define NOMEDISCIPLINA 50
 
 
-struct listaAluno{
-	int codigo;
-	char nome[NOMEALUNO];
-	struct listaAluno *proximo;
-	struct listaDisciplina *disc;
-};
 struct listaDisciplina{
 	int codigo;
 	char nome[NOMEALUNO];
 	float nota;
 	float frequencia;
 	struct listaDisciplina *proximo;
+};
+struct listaAluno{
+	int codigo;
+	char nome[NOMEALUNO];
+	struct listaAluno *proximo;
+	struct listaDisciplina *disc;
 };
 
 //Funções da estrutura aluno
@@ -157,7 +157,7 @@ void mostraAluno(struct listaAluno *paluno) {
 	struct listaAluno *aux;
 	aux = paluno;
 	while(aux != NULL) {
-		printf("\nAluno[%d] :::: Nome: %s", aux->codigo, aux->nome);
+		printf("\nAluno[%d] :::: Nome: %s, disciplina: %s", aux->codigo, aux->nome, aux->disc);
 		aux = aux->proximo;
 	}
 	getch();
@@ -269,11 +269,11 @@ struct listaDisciplina *removeOrdenadoDisciplina(struct listaDisciplina *pdisc, 
 	}
 	p = pdisc;
 	q = p;
-	while(p != NULL && p->codigo < px) {
+	while(q != NULL && q->codigo < px) {
 		p = q;
 		q = p->proximo;
 	}
-	if(q != NULL && p->codigo == px) {
+	if(q != NULL && q->codigo == px) {
 		removeDepoisDisciplina(p);
 	}
 	else {
@@ -332,6 +332,16 @@ void alteraDisciplina(struct listaDisciplina *pdisc, int px) {
 		gets(aux->nome);
 	}
 }
+void insereDisciplinaAluno(struct listaAluno *paluno, struct listaDisciplina *pdisc) {
+	struct listaAluno *aux;
+	struct listaDisciplina *discAluno;
+	discAluno = NULL;
+	discAluno = (listaDisciplina*)malloc(sizeof(listaDisciplina));
+	aux = paluno;
+	discAluno = pdisc;
+	aux->disc = discAluno;
+	
+}
 
 //Funções genericas
 void opcaoAlunoDisciplina(int *op) {
@@ -340,10 +350,11 @@ void opcaoAlunoDisciplina(int *op) {
 		printf("_____CONTROLE DISCIPLINAR_____\n\n");
 		printf("\n1. ALUNO");
 		printf("\n2. DISCIPLINA");
-		printf("\n3. SAIR");
+		printf("\n3. CADASTRAR DISCIPLINA PARA ALUNO");
+		printf("\n4. SAIR");
 		printf("\n\nDigite a opcao: ");
 		scanf("%d", op);
-	}while(*op < 1 || *op > 3);
+	}while(*op < 1 || *op > 4);
 }
 void opcaoAluno(int *op) {
 	do{
@@ -375,7 +386,7 @@ void opcaoDisciplina(int *op) {
 		scanf("%d", op);
 	}while(*op < 1 || *op > 7);
 }
-void exeAluno(int *op, struct listaAluno *paluno) {
+struct listaAluno *exeAluno(int *op, struct listaAluno *paluno) {
 	int codigo;
 	char nome[NOMEALUNO];
 	opcaoAluno(op);
@@ -413,12 +424,13 @@ void exeAluno(int *op, struct listaAluno *paluno) {
 		default:
 			break;
 	}
+	return paluno;
 }
-void exeDisciplina(int *op, struct listaDisciplina *pdisc) {
+struct listaDisciplina *exeDisciplina(int *op, struct listaDisciplina *pdisc) {
 	int codigo;
 	char nome[NOMEALUNO];
 	float nota, frequencia;
-	opcaoAluno(op);
+	opcaoDisciplina(op);
 	switch(*op) {
 		case 1:
 				printf("\nCodigo da disciplina para consulta: ");
@@ -453,35 +465,31 @@ void exeDisciplina(int *op, struct listaDisciplina *pdisc) {
 			default:
 				break;
 	}
+	return pdisc;
 }
 void exePrincipal(int *op, struct listaAluno *paluno, struct listaDisciplina *pdisc) {
-	
-	paluno = insereOrdenadoAluno(paluno, 11, "Barros");
-	paluno = insereOrdenadoAluno(paluno, 9, "Miguel");
-	paluno = insereOrdenadoAluno(paluno, 10, "Sousa");
-	paluno = insereOrdenadoAluno(paluno, 12, "Lucas");
-	
-	pdisc = insereOrdenadoDisciplina(pdisc, 1, "MD", 0, 0);
-	pdisc = insereOrdenadoDisciplina(pdisc, 2, "ED", 0, 0);
-	pdisc = insereOrdenadoDisciplina(pdisc, 5, "POO", 0, 0);
-	pdisc = insereOrdenadoDisciplina(pdisc, 10, "Matemática discreta", 0, 0);
-	
-	
+	int codigo;
 	do{
 		opcaoAlunoDisciplina(op);
 		
-		if(*op == 3) exit(0);
+		if(*op == 4) exit(0);
 		if(*op == 1) {
 			do {
-				exeAluno(op, paluno);
+				paluno = exeAluno(op, paluno);
 				if(*op == 6) exePrincipal(op, paluno, pdisc);
 			}while(1);
 		}
 		if(*op == 2) {
 			do {
-				exeDisciplina(op, pdisc);
+				pdisc = exeDisciplina(op, pdisc);
 				if(*op == 6) exePrincipal(op, paluno, pdisc);
 			}while(1);
+		}
+		if(*op == 3) {
+			mostraAluno(paluno);
+			printf("\nCodigo do aluno para lancar disciplina: ");
+			scanf("%d", &codigo);
+			insereDisciplinaAluno(paluno, pdisc);
 		}
 	}while(1);
 }
@@ -493,6 +501,17 @@ int main() {
 	
 	al = NULL;
 	disc = NULL;
+	
+	al = insereOrdenadoAluno(al, 11, "Barros");
+	al = insereOrdenadoAluno(al, 9, "Miguel");
+	al = insereOrdenadoAluno(al, 10, "Sousa");
+	al = insereOrdenadoAluno(al, 12, "Lucas");
+	
+	disc = insereOrdenadoDisciplina(disc, 1, "MD", 0, 0);
+	disc = insereOrdenadoDisciplina(disc, 2, "ED", 0, 0);
+	disc = insereOrdenadoDisciplina(disc, 5, "POO", 0, 0);
+	disc = insereOrdenadoDisciplina(disc, 10, "Matemática discreta", 0, 0);
+	
 	
 	exePrincipal(&op, al, disc);
 		
