@@ -72,7 +72,174 @@ struct listaAluno{
 	struct listaDisciplina *disc;
 };
 
-//Funções da estrutura aluno
+//Funções da lista disciplina
+struct listaDisciplina *insereInicioDisciplina(struct listaDisciplina *pdisc, int px, char pn[NOMEDISCIPLINA], float pnt, float pf) {
+	struct listaDisciplina *aux;
+	aux = (struct listaDisciplina*)malloc(sizeof(struct listaDisciplina));
+	aux->codigo = px;
+	strcpy(aux->nome, pn);
+	aux->nota = pnt;
+	aux->frequencia = pf;
+	aux->proximo = pdisc;
+	pdisc = aux;
+	return pdisc;
+}
+void insereDepoisDisciplina(struct listaDisciplina *pdisc, int px, char pn[NOMEDISCIPLINA], float pnt, float pf) {
+	struct listaDisciplina *aux;
+	aux = (struct listaDisciplina*)malloc(sizeof(struct listaDisciplina));
+	aux->codigo = px;
+	strcpy(aux->nome, pn);
+	aux->nota = pnt;
+	aux->frequencia = pf;
+	aux->proximo = pdisc->proximo;
+	pdisc->proximo = aux;
+}
+struct listaDisciplina *insereOrdenadoDisciplina(struct listaDisciplina *pdisc, int px, char pn[NOMEDISCIPLINA], float pnt, float pf) {
+	struct listaDisciplina *p, *q;
+	if(pdisc == NULL || px < pdisc->codigo) {
+		return insereInicioDisciplina(pdisc, px, pn, pnt, pf);
+	}
+	p = pdisc;
+	q = p;
+	while(q != NULL && q->codigo < px) {
+		p = q;
+		q = p->proximo;
+	}
+	if(q == NULL || q->codigo > px) {
+		insereDepoisDisciplina(p, px, pn, pnt, pf);
+	}
+	else {
+		printf("\nDisciplina ja cadastrada!");
+	}
+	return pdisc;
+}
+struct listaDisciplina *removeInicioDisciplina(struct listaDisciplina *pdisc) {
+	struct listaDisciplina *aux;
+	if(pdisc == NULL) {
+		printf("\nLista disciplina vazia!");
+		getch();
+		return pdisc;
+	}
+	pdisc = pdisc->proximo;
+	return pdisc;
+}
+void removeDepoisDisciplina(struct listaDisciplina *pdisc) {
+	struct listaDisciplina *aux;
+	aux = pdisc->proximo;
+	pdisc->proximo = aux->proximo;
+	free(aux);
+}
+struct listaDisciplina *removeOrdenadoDisciplina(struct listaDisciplina *pdisc, int px) {
+	struct listaDisciplina *p, *q;
+	if(pdisc == NULL) {
+		printf("\nNao ha disciplina cadastrada!");
+		getch();
+		return pdisc;
+	}
+	if(pdisc->codigo == px) {
+		return removeInicioDisciplina(pdisc);
+	}
+	p = pdisc;
+	q = p;
+	while(q != NULL && q->codigo < px) {
+		p = q;
+		q = p->proximo;
+	}
+	if(q != NULL && q->codigo == px) {
+		removeDepoisDisciplina(p);
+	}
+	else {
+		printf("\nDisciplina nao cadastrada!");
+	}
+	return pdisc;
+	
+}
+void mostraDisciplinaRedusido(struct listaDisciplina *pdisc) {
+	struct listaDisciplina *aux;
+	if(pdisc == NULL) {
+		printf("\nLista disciplina vazia!");
+		getch();
+	}
+	aux = pdisc;
+	while(aux != NULL) {
+		printf("\nDisciplina[%d] :::: Nome: %s", aux->codigo, aux->nome);
+		aux = aux->proximo;
+	}
+}
+void mostraDisciplinaCompleto(struct listaDisciplina *pdisc) {
+	struct listaDisciplina *aux;
+	if(pdisc == NULL) {
+		printf("\nLista disciplina vazia!");
+		getch();
+	}
+	aux = pdisc;
+	while(aux != NULL) {
+		printf("\nDisciplina[%d], Nome: %s, Nota: %.2f, Frequencia: %.2f", aux->codigo, aux->nome, aux->nota, aux->frequencia);
+		aux = aux->proximo;
+	}
+}
+struct listaDisciplina *consultaDisciplina(struct listaDisciplina *pdisc, int px) {
+	struct listaDisciplina *p, *q;
+	p = pdisc;
+	if(p == NULL) {
+		printf("\nLista disciplina vazia!");
+		getch();
+		return p;
+	}
+	if(p->codigo == px) {
+		printf("\nDisciplina[%d] :::: Nome: %s", p->codigo, p->nome);
+		getch();
+		return p;
+	}
+	q = p;
+	while(q != NULL && q->codigo < px) {
+		p = q;
+		q = p->proximo;
+	}
+	if(q != NULL && q->codigo == px) {
+		printf("\nDisciplina[%d] :::: Nome: %s", q->codigo, q->nome);
+		getch();
+	}
+	else {
+		printf("\nDisciplina nao cadastrada!");
+		getch();
+	}
+	return q;
+}
+struct listaDisciplina *consultaDisciplinaSemPrint(struct listaDisciplina *pdisc, int px) {
+	struct listaDisciplina *p, *q;
+	p = pdisc;
+	if(p == NULL) {
+		return p;
+	}
+	if(p->codigo == px) {
+		return p;
+	}
+	q = p;
+	while(q != NULL && q->codigo < px) {
+		p = q;
+		q = p->proximo;
+	}
+	if(q != NULL && q->codigo == px) {
+		return q;
+	}
+	else {
+		printf("\nDisciplina nao cadastrada!");
+		getch();
+	}
+	return q;
+}
+void alteraDisciplina(struct listaDisciplina *pdisc, int px) {
+	struct listaDisciplina *aux;
+	aux = consultaDisciplina(pdisc, px);
+	if(aux->codigo == px) {
+		printf("\nDigite o nome da Disciplina: ");
+		fflush(stdin);
+		gets(aux->nome);
+	}
+}
+
+//Funções da lista aluno
 struct listaAluno *insereInicioAluno(struct listaAluno *paluno, int px, char pn[NOMEALUNO]) {
 	struct listaAluno *aux;
 	aux = (listaAluno*)malloc(sizeof(listaAluno));
@@ -157,10 +324,22 @@ void mostraAluno(struct listaAluno *paluno) {
 	struct listaAluno *aux;
 	aux = paluno;
 	while(aux != NULL) {
-		printf("\nAluno[%d] :::: Nome: %s, disciplina: %s", aux->codigo, aux->nome, aux->disc);
+		printf("\nAluno[%d] :::: Nome: %s", aux->codigo, aux->nome);
 		aux = aux->proximo;
 	}
-	getch();
+}
+void mostraAlunoDisciplina(struct listaAluno *paluno) {
+	struct listaAluno *aux;
+	aux = paluno;
+	while(aux != NULL) {
+		printf("\n\nAluno[%d] :::: Nome: %s,", aux->codigo, aux->nome);
+		if(aux->disc == NULL)
+			printf("\nDisciplina: %s", aux->disc);
+		else {
+			mostraDisciplinaCompleto(aux->disc);
+		}
+		aux = aux->proximo;
+	}
 }
 struct listaAluno *consultaAluno(struct listaAluno *paluno, int px) {
 	struct listaAluno *p, *q;
@@ -190,6 +369,31 @@ struct listaAluno *consultaAluno(struct listaAluno *paluno, int px) {
 	}
 	return q;
 }
+struct listaAluno *consultaAlunoSemPrint(struct listaAluno *paluno, int px) {
+	struct listaAluno *p, *q;
+	p = paluno;
+	if(p == NULL) {
+		printf("\nLista vazia!");
+		getch();
+		return p;
+	}
+	if(p->codigo == px) {
+		return p;
+	}
+	q = p;
+	while(q != NULL && q->codigo < px) {
+		p = q;
+		q = p->proximo;
+	}
+	if(q != NULL && q->codigo == px) {
+		return q;
+	}
+	else {
+		printf("\nAluno nao cadastrado!");
+		getch();
+	}
+	return q;
+}
 void alteraAluno(struct listaAluno *paluno, int px) {
 	struct listaAluno *aux;
 	aux = consultaAluno(paluno, px);
@@ -198,149 +402,6 @@ void alteraAluno(struct listaAluno *paluno, int px) {
 		fflush(stdin);
 		gets(aux->nome);
 	}
-}
-
-//Funções da estrutura disciplina
-struct listaDisciplina *insereInicioDisciplina(struct listaDisciplina *pdisc, int px, char pn[NOMEDISCIPLINA], float pnt, float pf) {
-	struct listaDisciplina *aux;
-	aux = (struct listaDisciplina*)malloc(sizeof(struct listaDisciplina));
-	aux->codigo = px;
-	strcpy(aux->nome, pn);
-	aux->nota = pnt;
-	aux->frequencia = pf;
-	aux->proximo = pdisc;
-	pdisc = aux;
-	return pdisc;
-}
-void insereDepoisDisciplina(struct listaDisciplina *pdisc, int px, char pn[NOMEDISCIPLINA], float pnt, float pf) {
-	struct listaDisciplina *aux;
-	aux = (struct listaDisciplina*)malloc(sizeof(struct listaDisciplina));
-	aux->codigo = px;
-	strcpy(aux->nome, pn);
-	aux->nota = pnt;
-	aux->frequencia = pf;
-	aux->proximo = pdisc->proximo;
-	pdisc->proximo = aux;
-}
-struct listaDisciplina *insereOrdenadoDisciplina(struct listaDisciplina *pdisc, int px, char pn[NOMEDISCIPLINA], float pnt, float pf) {
-	struct listaDisciplina *p, *q;
-	if(pdisc == NULL || px < pdisc->codigo) {
-		return insereInicioDisciplina(pdisc, px, pn, pnt, pf);
-	}
-	p = pdisc;
-	q = p;
-	while(q != NULL && q->codigo < px) {
-		p = q;
-		q = p->proximo;
-	}
-	if(q == NULL || q->codigo > px) {
-		insereDepoisDisciplina(p, px, pn, pnt, pf);
-	}
-	else {
-		printf("\nDisciplina ja cadastrada!");
-	}
-	return pdisc;
-}
-struct listaDisciplina *removeInicioDisciplina(struct listaDisciplina *pdisc) {
-	struct listaDisciplina *aux;
-	if(pdisc == NULL) {
-		printf("\nLista disciplina vazia!");
-		getch();
-		return pdisc;
-	}
-	pdisc = pdisc->proximo;
-	return pdisc;
-}
-void removeDepoisDisciplina(struct listaDisciplina *pdisc) {
-	struct listaDisciplina *aux;
-	aux = pdisc->proximo;
-	pdisc->proximo = aux->proximo;
-	free(aux);
-}
-struct listaDisciplina *removeOrdenadoDisciplina(struct listaDisciplina *pdisc, int px) {
-	struct listaDisciplina *p, *q;
-	if(pdisc == NULL) {
-		printf("\nNao ha disciplina cadastrada!");
-		getch();
-		return pdisc;
-	}
-	if(pdisc->codigo == px) {
-		return removeInicioDisciplina(pdisc);
-	}
-	p = pdisc;
-	q = p;
-	while(q != NULL && q->codigo < px) {
-		p = q;
-		q = p->proximo;
-	}
-	if(q != NULL && q->codigo == px) {
-		removeDepoisDisciplina(p);
-	}
-	else {
-		printf("\nDisciplina nao cadastrada!");
-	}
-	return pdisc;
-	
-}
-void mostraDisciplina(struct listaDisciplina *pdisc) {
-	struct listaDisciplina *aux;
-	if(pdisc == NULL) {
-		printf("\nLista disciplina vazia!");
-		getch();
-	}
-	aux = pdisc;
-	while(aux != NULL) {
-		printf("\nDisciplina[%d] :::: Nome: %s", aux->codigo, aux->nome);
-		aux = aux->proximo;
-	}
-	getch();
-}
-struct listaDisciplina *consultaDisciplina(struct listaDisciplina *pdisc, int px) {
-	struct listaDisciplina *p, *q;
-	p = pdisc;
-	if(p == NULL) {
-		printf("\nLista disciplina vazia!");
-		getch();
-		return p;
-	}
-	if(p->codigo == px) {
-		printf("\nDisciplina[%d] :::: Nome: %s", p->codigo, p->nome);
-		getch();
-		return p;
-	}
-	q = p;
-	while(q != NULL && q->codigo < px) {
-		p = q;
-		q = p->proximo;
-	}
-	if(q != NULL && q->codigo == px) {
-		printf("\nDisciplina[%d] :::: Nome: %s", q->codigo, q->nome);
-		getch();
-	}
-	else {
-		printf("\nDisciplina nao cadastrada!");
-		getch();
-	}
-	return q;
-}
-void alteraDisciplina(struct listaDisciplina *pdisc, int px) {
-	struct listaDisciplina *aux;
-	aux = consultaDisciplina(pdisc, px);
-	if(aux->codigo == px) {
-		printf("\nDigite o nome da Disciplina: ");
-		fflush(stdin);
-		gets(aux->nome);
-	}
-}
-void insereDisciplinaAluno(struct listaAluno *paluno, struct listaDisciplina *pdisc) {
-	struct listaAluno *aux;
-	struct listaDisciplina *discAluno;
-	discAluno = NULL;
-	discAluno = (listaDisciplina*)malloc(sizeof(listaDisciplina));
-	aux = paluno;
-	discAluno = pdisc;
-	aux->disc = discAluno;
-	
 }
 
 //Funções genericas
@@ -410,7 +471,8 @@ struct listaAluno *exeAluno(int *op, struct listaAluno *paluno) {
 			alteraAluno(paluno, codigo);
 			break;
 		case 4:
-			mostraAluno(paluno);
+			mostraAlunoDisciplina(paluno);
+			getch();
 			break;
 		case 5:
 			printf("\nCodigo do aluno que deseja remover: ");
@@ -451,7 +513,8 @@ struct listaDisciplina *exeDisciplina(int *op, struct listaDisciplina *pdisc) {
 				alteraDisciplina(pdisc, codigo);
 				break;
 			case 4:
-				mostraDisciplina(pdisc);	
+				mostraDisciplinaRedusido(pdisc);
+				getch();	
 				break;
 			case 5:
 				printf("\nCodigo da disicplina que deseja remover: ");
@@ -468,28 +531,45 @@ struct listaDisciplina *exeDisciplina(int *op, struct listaDisciplina *pdisc) {
 	return pdisc;
 }
 void exePrincipal(int *op, struct listaAluno *paluno, struct listaDisciplina *pdisc) {
-	int codigo;
+	int codigoAluno, codigoDisciplina;
+	char nome[NOMEALUNO];
+	float nota, frequencia;
 	do{
 		opcaoAlunoDisciplina(op);
 		
 		if(*op == 4) exit(0);
 		if(*op == 1) {
 			do {
-				paluno = exeAluno(op, paluno);
+				exeAluno(op, paluno);
 				if(*op == 6) exePrincipal(op, paluno, pdisc);
 			}while(1);
 		}
 		if(*op == 2) {
 			do {
-				pdisc = exeDisciplina(op, pdisc);
+				exeDisciplina(op, pdisc);
 				if(*op == 6) exePrincipal(op, paluno, pdisc);
 			}while(1);
 		}
 		if(*op == 3) {
+			struct listaAluno *auxAluno;
+			struct listaDisciplina *auxDisc;
+			
 			mostraAluno(paluno);
-			printf("\nCodigo do aluno para lancar disciplina: ");
-			scanf("%d", &codigo);
-			insereDisciplinaAluno(paluno, pdisc);
+			printf("\n\nCodigo do aluno para lancar disciplina: ");
+			scanf("%d", &codigoAluno);
+			auxAluno = consultaAlunoSemPrint(paluno, codigoAluno);
+			
+			mostraDisciplinaRedusido(pdisc);
+			printf("\n\nCodigo da disciplina que deseja lancar: ");
+			scanf("%d", &codigoDisciplina);
+			auxDisc = consultaDisciplinaSemPrint(pdisc, codigoDisciplina);
+			
+			printf("\nDigite a nota do aluno: ");
+			scanf("%f", &nota);
+			printf("\nDigite a frequencia do aluno: ");
+			scanf("%f", &frequencia);
+			
+			auxAluno->disc = insereOrdenadoDisciplina(auxAluno->disc, auxDisc->codigo, auxDisc->nome, nota, frequencia);
 		}
 	}while(1);
 }
@@ -510,7 +590,7 @@ int main() {
 	disc = insereOrdenadoDisciplina(disc, 1, "MD", 0, 0);
 	disc = insereOrdenadoDisciplina(disc, 2, "ED", 0, 0);
 	disc = insereOrdenadoDisciplina(disc, 5, "POO", 0, 0);
-	disc = insereOrdenadoDisciplina(disc, 10, "Matemática discreta", 0, 0);
+	disc = insereOrdenadoDisciplina(disc, 10, "Matematica discreta", 0, 0);
 	
 	
 	exePrincipal(&op, al, disc);
