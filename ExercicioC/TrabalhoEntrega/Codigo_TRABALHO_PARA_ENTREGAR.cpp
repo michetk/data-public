@@ -281,7 +281,7 @@ struct listaAluno *insereOrdenadoAluno(struct listaAluno *paluno, int px, char p
 struct listaAluno *removeInicioAluno(struct listaAluno *paluno) {
 	struct listaAluno *aux;
 	if(paluno == NULL) {
-		printf("nLista aluno vazia!");
+		printf("\nLista aluno vazia!");
 		getch();
 		return paluno;
 	}
@@ -299,7 +299,12 @@ void removeDepoisAluno(struct listaAluno *paluno) {
 struct listaAluno *removeOrdenadoAluno(struct listaAluno *paluno, int px) {
 	struct listaAluno *p, *q;
 	if(paluno == NULL) {
-		printf("\nNao ha aluno cadastrado!");
+		printf("\nAluno bao cadastrado!");
+		getch();
+		return paluno;
+	}
+	if(paluno->disc != NULL) {
+		printf("\nDisciplina associada ao aluno. NAO PODE SER REMOVIDO! Exclua a disciplina primeiro.");
 		getch();
 		return paluno;
 	}
@@ -351,7 +356,11 @@ struct listaAluno *consultaAluno(struct listaAluno *paluno, int px) {
 	}
 	if(p->codigo == px) {
 		printf("\nAluno[%d] :::: Nome: %s", p->codigo, p->nome);
-		getch();
+		if(p->disc == NULL)
+			printf("\nDisciplina: %s", p->disc);
+		else {
+			mostraDisciplinaCompleto(p->disc);
+		}
 		return p;
 	}
 	q = p;
@@ -456,6 +465,7 @@ struct listaAluno *exeAluno(int *op, struct listaAluno *paluno) {
 			printf("\nCodigo do aluno para consulta: ");
 			scanf("%d", &codigo);
 			consultaAluno(paluno, codigo);
+			getch();
 			break;
 		case 2:
 			printf("\nDigite o codigo do aluno: ");
@@ -463,10 +473,10 @@ struct listaAluno *exeAluno(int *op, struct listaAluno *paluno) {
 			printf("\nDigite o nome do aluno: ");
 			fflush(stdin);
 			gets(nome);
-			paluno = insereOrdenadoAluno(paluno, codigo, nome);
-			break;
+			return paluno = insereOrdenadoAluno(paluno, codigo, nome);
 		case 3:
-			printf("\nCodigo do aluno que deseja alterar: ");
+			mostraAluno(paluno);
+			printf("\n\nCodigo do aluno que deseja alterar: ");
 			scanf("%d", &codigo);
 			alteraAluno(paluno, codigo);
 			break;
@@ -475,7 +485,8 @@ struct listaAluno *exeAluno(int *op, struct listaAluno *paluno) {
 			getch();
 			break;
 		case 5:
-			printf("\nCodigo do aluno que deseja remover: ");
+			mostraAluno(paluno);
+			printf("\n\nCodigo do aluno que deseja remover: ");
 			scanf("%d", &codigo);
 			paluno = removeOrdenadoAluno(paluno, codigo);
 			break;
@@ -540,7 +551,7 @@ void exePrincipal(int *op, struct listaAluno *paluno, struct listaDisciplina *pd
 		if(*op == 4) exit(0);
 		if(*op == 1) {
 			do {
-				exeAluno(op, paluno);
+				paluno = exeAluno(op, paluno);
 				if(*op == 6) exePrincipal(op, paluno, pdisc);
 			}while(1);
 		}
