@@ -11,6 +11,7 @@ package trabalhoprogramacao;
  */
 public class Main {
     public static void main(String[] args) {
+        Contato auxCont;
         Agenda ag = new Agenda();
         Contato cont[] = new Contato[4];
         Data d = new Data(23,4,1990);
@@ -24,10 +25,17 @@ public class Main {
         }
         
         //ag.mostraAniversariates(d);
-        ag.empresaRamo("Deposito");
+        //ag.empresaRamo("Deposito");
+        ag.mostraContatoPessoal();
+        ag.mostraContatoProfissional();
         
-        //ag.mostraContatoPessoal();
-        //ag.mostraContatoProfissional();
+        ag.retiraContato("Miguel");
+        
+        ag.mostraContatoPessoal();
+        ag.mostraContatoProfissional();
+        //auxCont = ag.buscaContato("Karlos");
+        //System.out.println("Busca contato: " + auxCont);
+        
         
     }
 }
