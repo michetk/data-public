@@ -13,7 +13,7 @@ public class ContatoPessoal extends Contato {
     private String profissao;
     private Data dataNascimento;
 
-    public ContatoPessoal(String profissao, Data dataNascimento, String nome, String endereco, String telefone) {
+    public ContatoPessoal(String nome, String endereco, String telefone, String profissao, Data dataNascimento) {
         super(nome, endereco, telefone);
         this.profissao = profissao;
         this.dataNascimento = dataNascimento;
@@ -36,6 +36,13 @@ public class ContatoPessoal extends Contato {
     public Data getDataNascimento() {
         return dataNascimento;
     }
+	
+	//Outras Operaçoes
+	public String toString() {
+		String s;
+		s = super.toString() + "\nProfissao: " + profissao + "\nData Nascimento: " + dataNascimento;
+		return s;
+	}
     
     
 }

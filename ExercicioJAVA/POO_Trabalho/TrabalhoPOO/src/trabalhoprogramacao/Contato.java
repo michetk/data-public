@@ -45,5 +45,12 @@ public class Contato {
     public String getTelefone() {
         return telefone;
     }
+	
+	//Outras Operaçoes
+	public String toString() {
+		String s;
+		s = "\n\nNome: " + nome + "\nEndereco: " + endereco + "\nTelefone: " + telefone;
+		return s;
+	}
     
 }

@@ -9,11 +9,19 @@ package trabalhoprogramacao;
  *
  * @author 19052731
  */
+
 public class Data {
     private int dia;
     private int mes;
     private int ano;
 
+    
+    public Data(int dia, int mes, int ano) {
+        this.dia = dia;
+        this.mes = mes;
+        this.ano = ano;
+    }
+    
     //get
     public int getDia() {
         return dia;
@@ -48,10 +56,16 @@ public class Data {
             }
         }
     public boolean comparaData(Data data) {
-        return true;
+        if(data.getDia() == dia && data.getMes() == mes && data.getAno() == ano)
+            return true;
+        else
+            return false;
     }
     public boolean comparaDiaMes(Data data) {
-        return true;
+        if(data.getDia() == dia && data.getMes() == mes)
+            return true;
+        else
+            return false;
     }
     public String toString() {
         String formatDia = String.format("%02d", dia);

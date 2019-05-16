@@ -13,7 +13,7 @@ public class ContatoProfissional extends Contato {
     private int ramal;
     private String ramoEmpresa;
 
-    public ContatoProfissional(int ramal, String ramoEmpresa, String nome, String endereco, String telefone) {
+    public ContatoProfissional(String nome, String endereco, String telefone, int ramal, String ramoEmpresa) {
         super(nome, endereco, telefone);
         this.ramal = ramal;
         this.ramoEmpresa = ramoEmpresa;
@@ -39,4 +39,10 @@ public class ContatoProfissional extends Contato {
         return ramoEmpresa;
     }
     
+	//Outras Operaçoes
+	public String toString() {
+		String s;
+		s = super.toString() + "\nRamal: " + ramal + "\nRamo Empresa: " + ramoEmpresa;
+		return s;
+	}
 }
