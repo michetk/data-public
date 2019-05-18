@@ -54,6 +54,7 @@ ele, ou seja, disc deve ter o valor igual a NULL.
 #include<stdlib.h>
 #include<conio.h>
 #include<string.h>
+
 #define NOMEALUNO 50
 #define NOMEDISCIPLINA 50
 
@@ -563,7 +564,7 @@ void escCancela(char *pgetche, int ptipo_retorno, int *op, struct listaAluno *pa
 void exePrincipal(int *op, struct listaAluno *paluno, struct listaDisciplina *pdisc) {
 	int codigoAluno, codigoDisciplina;
 	char nome[NOMEALUNO];
-	float nota, frequencia;
+	int nota, frequencia;
 	float aux_nota;
 	do{
 		opcaoAlunoDisciplina(op);
@@ -583,10 +584,10 @@ void exePrincipal(int *op, struct listaAluno *paluno, struct listaDisciplina *pd
 		}
 		if(*op == 3) {
 			char *aux_recebe;
-			char *aux_recebe_teste[1];
+			char *aux_recebe_vet[2];
 			aux_recebe = (char*)malloc(sizeof(char));
-			for(int i = 0; aux_recebe_teste[i] != '\0'; i++) {
-				aux_recebe_teste[i] = (char*)malloc(sizeof(char));
+			for(int i = 0; aux_recebe_vet[i] != '\0'; i++) {
+				aux_recebe_vet[i] = (char*)malloc(sizeof(char));
 			}
 			
 			//aux_recebe_teste = (char*)malloc(sizeof(char));
@@ -614,23 +615,29 @@ void exePrincipal(int *op, struct listaAluno *paluno, struct listaDisciplina *pd
 			
 			printf("\n\nDigite a nota do aluno: ");
 			fflush(stdin);
-			*aux_recebe_teste[0] = getche();
-			if(*aux_recebe_teste[0] != 27) {
-				printf("\n[%d] ::: %d", 0, *aux_recebe_teste[0]);
-				for(int i = 1; aux_recebe_teste[i] != '\0'; i++) {
+			*aux_recebe_vet[0] = getche();
+			if(*aux_recebe_vet[0] != 27) {
+				for(int i = 1; aux_recebe_vet[i] != '\0'; i++) {
 					fflush(stdin);
-					printf("\t");
-					*aux_recebe_teste[i] = getche();
-					printf("\n[%d] ::: %d", i, *aux_recebe_teste[i]);
-					//break;
+					*aux_recebe_vet[i] = getche();
+					if(*aux_recebe_vet[i] != 27 && *aux_recebe_vet[i] != 13)
+						*aux_recebe_vet[0] = *aux_recebe_vet[0] + *aux_recebe_vet[i];
+					else
+						if(*aux_recebe_vet[i] == 27) {
+							*aux_recebe_vet[0] = *aux_recebe_vet[i];
+							break;
+						}
+					else {
+						nota = atoi(aux_recebe_vet[0]);
+						break;
+					}
 				}
 			}
 			
-			//gets(*aux_recebe_teste);
-			
-			escCancela(aux_recebe, 3, op, paluno, pdisc);
+			escCancela(aux_recebe_vet[0], 3, op, paluno, pdisc);
+			printf("\nChar: %d", *aux_recebe_vet[0]);
+			printf("\nNota: %d", nota);
 			getch();
-			nota = atoi(aux_recebe);
 			
 			printf("\n\nDigite a frequencia do aluno: ");
 			fflush(stdin);
