@@ -57,7 +57,6 @@ ele, ou seja, disc deve ter o valor igual a NULL.
 #define NOMEALUNO 50
 #define NOMEDISCIPLINA 50
 
-
 struct listaDisciplina{
 	int codigo;
 	char nome[NOMEALUNO];
@@ -416,20 +415,30 @@ void alteraAluno(struct listaAluno *paluno, int px) {
 //Funções genericas
 void opcaoAlunoDisciplina(int *op) {
 	do{
+		char *aux_recebe;
+		aux_recebe = (char*)malloc(sizeof(char));
 		system("cls");
-		printf("_____CONTROLE DISCIPLINAR_____\n\n");
+		printf("_____CONTROLE DISCIPLINAR_____");
+		printf("\t\tESC-(cancelar operacao)\n\n");
 		printf("\n1. ALUNO");
 		printf("\n2. DISCIPLINA");
 		printf("\n3. CADASTRAR DISCIPLINA PARA ALUNO");
 		printf("\n4. SAIR");
 		printf("\n\nDigite a opcao: ");
-		scanf("%d", op);
+		fflush(stdin);
+		*aux_recebe = getche();
+		*op = atoi(aux_recebe);
+		printf("\n_________________________________\n\n");
+		
 	}while(*op < 1 || *op > 4);
 }
 void opcaoAluno(int *op) {
 	do{
+		char *aux_recebe;
+		aux_recebe = (char*)malloc(sizeof(char));
 		system("cls");
-		printf("_____ALUNO_____\n\n");
+		printf("_____ALUNO_____");
+		printf("\t\tESC-(cancelar operacao)\n\n");
 		printf("\n1. Buscar");
 		printf("\n2. Inserir");
 		printf("\n3. Alterar");
@@ -438,13 +447,19 @@ void opcaoAluno(int *op) {
 		printf("\n6. Menu Principal");
 		printf("\n7. Sair");
 		printf("\n\nDigite a opcao: ");
-		scanf("%d", op);
+		fflush(stdin);
+		*aux_recebe = getche();
+		*op = atoi(aux_recebe);
+		printf("\n_________________________________\n\n");
 	}while(*op < 1 || *op > 7);
 }
 void opcaoDisciplina(int *op) {
 	do{
+		char *aux_recebe;
+		aux_recebe = (char*)malloc(sizeof(char));
 		system("cls");
-		printf("_____DISCIPLINA_____\n\n");
+		printf("_____DISCIPLINA_____");
+		printf("\t\tESC-(cancelar operacao)\n\n");
 		printf("\n1. Buscar");
 		printf("\n2. Inserir");
 		printf("\n3. Alterar");
@@ -453,7 +468,10 @@ void opcaoDisciplina(int *op) {
 		printf("\n6. Menu Principal");
 		printf("\n7. Sair");
 		printf("\n\nDigite a opcao: ");
-		scanf("%d", op);
+		fflush(stdin);
+		*aux_recebe = getche();
+		*op = atoi(aux_recebe);
+		printf("\n_________________________________\n\n");
 	}while(*op < 1 || *op > 7);
 }
 struct listaAluno *exeAluno(int *op, struct listaAluno *paluno) {
@@ -541,10 +559,12 @@ struct listaDisciplina *exeDisciplina(int *op, struct listaDisciplina *pdisc) {
 	}
 	return pdisc;
 }
+void escCancela(char *pgetche, int ptipo_retorno, int *op, struct listaAluno *paluno, struct listaDisciplina *pdisc);
 void exePrincipal(int *op, struct listaAluno *paluno, struct listaDisciplina *pdisc) {
 	int codigoAluno, codigoDisciplina;
 	char nome[NOMEALUNO];
 	float nota, frequencia;
+	float aux_nota;
 	do{
 		opcaoAlunoDisciplina(op);
 		
@@ -562,25 +582,66 @@ void exePrincipal(int *op, struct listaAluno *paluno, struct listaDisciplina *pd
 			}while(1);
 		}
 		if(*op == 3) {
+			char *aux_recebe;
+			char *aux_recebe_teste[1];
+			aux_recebe = (char*)malloc(sizeof(char));
+			for(int i = 0; aux_recebe_teste[i] != '\0'; i++) {
+				aux_recebe_teste[i] = (char*)malloc(sizeof(char));
+			}
+			
+			//aux_recebe_teste = (char*)malloc(sizeof(char));
 			struct listaAluno *auxAluno;
 			struct listaDisciplina *auxDisc;
 			
 			mostraAluno(paluno);
 			printf("\n\nCodigo do aluno para lancar disciplina: ");
-			scanf("%d", &codigoAluno);
+			fflush(stdin);
+			*aux_recebe = getche();
+			escCancela(aux_recebe, 3, op, paluno, pdisc);
+			getch();
+			codigoAluno = atoi(aux_recebe);
 			auxAluno = consultaAlunoSemPrint(paluno, codigoAluno);
 			
+			printf("\n");
 			mostraDisciplinaRedusido(pdisc);
 			printf("\n\nCodigo da disciplina que deseja lancar: ");
-			scanf("%d", &codigoDisciplina);
+			fflush(stdin);
+			*aux_recebe = getche();
+			escCancela(aux_recebe, 3, op, paluno, pdisc);
+			getch();
+			codigoDisciplina = atoi(aux_recebe);
 			auxDisc = consultaDisciplinaSemPrint(pdisc, codigoDisciplina);
 			
-			printf("\nDigite a nota do aluno: ");
-			scanf("%f", &nota);
-			printf("\nDigite a frequencia do aluno: ");
-			scanf("%f", &frequencia);
+			printf("\n\nDigite a nota do aluno: ");
+			fflush(stdin);
+			*aux_recebe_teste[0] = getche();
+			if(*aux_recebe_teste[0] != 27) {
+				printf("\n[%d] ::: %d", 0, *aux_recebe_teste[0]);
+				for(int i = 1; aux_recebe_teste[i] != '\0'; i++) {
+					fflush(stdin);
+					printf("\t");
+					*aux_recebe_teste[i] = getche();
+					printf("\n[%d] ::: %d", i, *aux_recebe_teste[i]);
+					//break;
+				}
+			}
+			
+			//gets(*aux_recebe_teste);
+			
+			escCancela(aux_recebe, 3, op, paluno, pdisc);
+			getch();
+			nota = atoi(aux_recebe);
+			
+			printf("\n\nDigite a frequencia do aluno: ");
+			fflush(stdin);
+			*aux_recebe = getche();
+			escCancela(aux_recebe, 3, op, paluno, pdisc);
+			getch();
+			frequencia = atoi(aux_recebe);
 			
 			auxAluno->disc = insereOrdenadoDisciplina(auxAluno->disc, auxDisc->codigo, auxDisc->nome, nota, frequencia);
+			
+			//getch();
 		}
 	}while(1);
 }
@@ -614,5 +675,18 @@ int main() {
 	return 0;
 }
 
-
-
+//Funções genericas
+void escCancela(char *pgetche, int ptipo_retorno, int *op, struct listaAluno *paluno, struct listaDisciplina *pdisc) {
+	if(*pgetche != 27)
+		return;
+	switch(ptipo_retorno) {
+		case 1:
+			exeAluno(op, paluno);
+		case 2:
+			exeDisciplina(op, pdisc);
+		case 3:
+			exePrincipal(op, paluno, pdisc);
+		default:
+			exePrincipal(op, paluno, pdisc);
+	}
+}
