@@ -7,7 +7,7 @@ ACESSANDO AS VARI�VEIS DE DENTRO DA ESTRUTURA
 #include<string.h>
 
 struct cadastro {
-	char nome[50];
+	char nome[45];
 	int idade;
 	char rua[50];
 	int numero;
