@@ -1,0 +1,42 @@
+<div class="row">
+    <div class="col-lg-6 mx-2 p-0">
+        <div class="col mb-1 p-0">
+            <a href="/admin/cadpostagens" class="text-decoration-none">
+                <img src="/img/arrow-repeat.svg" alt="voltar" title="voltar " width="32" height="32">
+                &nbsp;Retomar
+            </a>
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h4>Cadastro de Postagem</h4>
+                    <form action="/admin/cadpostagens/cad" method="POST">
+                        <label for="titulo">Titulo: </label>
+                        <input type="text" name="titulo" class="form-control form-control-sm text-uppercase"
+                            id="select">
+                        <label for="slug">Descrição: </label>
+                        <input type="text" name="descricao" class="form-control form-control-sm text-uppercase">
+                        <label for="conteudo">Conteúdo: </label>
+                        <textarea name="conteudo" id="" cols="30" rows="5"
+                            class="form-control form-contol-sm"></textarea>
+                        <label for="categoria">Categoria: </label>
+                        <select name="categoria" class="custom-select">
+                            {{#each categorias}}
+                            <option value="{{_id}}">{{nome}}</option>
+                            {{else}}
+                            Sem categoria        
+                            {{/each}}
+                        </select>
+                        <button type="submit" class="btn btn-success w-100 mt-2">Cadastrar Postagem</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="row m-0 p-0 row-cols-1">
+            {{#each erros}}
+            <div class="col alert alert-danger mb-1 p-1">
+                <small>{{texto}}</small>
+            </div>
+            {{else}}
+            {{/each}}
+        </div>
+    </div>
+</div>

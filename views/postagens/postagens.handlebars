@@ -1,0 +1,29 @@
+<div class="row">
+    <div class="col text-center text-md-left">
+        <h1>POSTAGENS</h1>
+        <a href="/admin/cadpostagens"><button class="btn btn-primary">Cadastrar uma Postagem</button></a>
+    </div>
+</div>
+<div class="row">
+    {{#each postagens}}
+    <div class="col-lg-6">
+        <div class="card mt-4">
+            <div class="card-body">
+                <h3>{{titulo}}</h3>
+                <small>{{descricao}}</small><br>
+                <a href="/admin/cadpostagens/edit/{{_id}}">
+                    <button type="button" class="btn btn-success mt-1">Editar</button>
+                </a>
+                </a>
+                <a href="/admin/cadpostagens/del/{{_id}}">
+                    <button type="button" class="btn btn-danger mt-1">Deletar</button>
+                </a>
+            </div>
+        </div>
+    </div>
+    {{else}}
+    <div class="col mt-4">
+        <h5>Não há postagens cadastradas</h5>
+    </div>
+    {{/each}}
+</div>

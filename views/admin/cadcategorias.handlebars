@@ -1,0 +1,32 @@
+<div class="row">
+    <div class="col-lg-6 mx-2 p-0">
+        <div class="col mb-1 p-0">
+            <a href="/admin/cadcategorias" class="text-decoration-none">
+                <img src="/img/arrow-repeat.svg" alt="voltar" title="voltar " width="32" height="32">
+                &nbsp;Retomar
+            </a>
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h4>Cadastro de Categoria</h4>
+                    <form action="/admin/cadcategorias/cad" method="POST">
+                        <label for="nome">Nome: </label>
+                        <input type="text" name="nome" placeholder="Nome da categoria"
+                            class="form-control form-control-sm text-uppercase" id="select">
+                        <label for="slug">Slug: </label>
+                        <input type="text" name="slug" placeholder="Nome do slug"
+                            class="form-control form-control-sm text-lowercase">
+                        <button type="submit" class="btn btn-success w-100 mt-2">Cadastrar Categoria</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="row m-0 p-0 row-cols-1">
+            {{#each erros}}
+            <div class="col alert alert-danger mb-1 p-1">
+                <small>{{texto}}</small>
+            </div>
+            {{else}}
+            {{/each}}
+        </div>
+    </div>
+</div>

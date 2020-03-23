@@ -1,0 +1,29 @@
+<div class="row">
+    <div class="col text-center text-md-left">
+        <h1>CATEGORIAS</h1>
+        <a href="/admin/cadcategorias"><button class="btn btn-primary">Cadastrar uma Categoria</button></a>
+    </div>
+</div>
+<div class="row">
+    {{#each categorias}}
+    <div class="col-lg-3">
+        <div class="card mt-4">
+            <div class="card-body">
+                <a href="/admin/postcategoria/{{_id}}" class="text-secondary"><h3>{{nome}}</h3></a>
+                <small>{{slug}}</small><br>
+                <a href="/admin/cadcategorias/edit/{{_id}}">
+                    <button type="button" class="btn btn-success mt-1">Editar</button>
+                </a>
+                </a>
+                <a href="/admin/cadcategorias/del/{{_id}}">
+                    <button type="button" class="btn btn-danger mt-1">Deletar</button>
+                </a>
+            </div>
+        </div>
+    </div>
+    {{else}}
+    <div class="col mt-4">
+        <h5>Não há categorias cadastradas</h5>
+    </div>
+    {{/each}}
+</div>
